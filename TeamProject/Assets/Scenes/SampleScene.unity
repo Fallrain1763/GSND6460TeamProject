@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585549}
   - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
@@ -264,7 +265,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c47995431bfc4e7dbf951a06b875306, type: 3}
   m_Name: 
@@ -272,6 +273,27 @@ MonoBehaviour:
   target: {fileID: 2025452045}
   height: 15
   smoothSpeed: 10
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa0e3a71a5f1194f87958e9e7da8367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThirdPersonCamera
+  target: {fileID: 2025452045}
+  cameraPivot: {fileID: 1341370521}
+  pivotOffset: {x: 0, y: 0, z: 0}
+  distance: 0
+  shoulderOffset: 0
+  mouseSensitivity: 2
+  minPitch: -35
+  maxPitch: 70
+  followSmoothness: 20
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,6 +654,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1341370520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1341370521}
+  m_Layer: 0
+  m_Name: CameraPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1341370521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1341370520}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.687, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2025452045}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1354277354
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -697,6 +750,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
+--- !u!1 &1369803214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1369803215}
+  m_Layer: 0
+  m_Name: ShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1369803215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369803214}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2025452045}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1919577328
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,7 +796,7 @@ GameObject:
   - component: {fileID: 1919577333}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -858,6 +942,8 @@ GameObject:
   - component: {fileID: 2025452041}
   - component: {fileID: 2025452046}
   - component: {fileID: 2025452048}
+  - component: {fileID: 2025452050}
+  - component: {fileID: 2025452049}
   - component: {fileID: 2025452047}
   m_Layer: 0
   m_Name: Player
@@ -879,6 +965,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
+  rotationSpeed: 12
+  jumpForce: 7
+  isGrounded: 1
+  cameraController: {fileID: 330585549}
 --- !u!136 &2025452042
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -971,7 +1061,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1341370521}
+  - {fileID: 1369803215}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &2025452046
@@ -1008,7 +1100,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2025452040}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a794b1ded4e44a41ab29381f364278a, type: 3}
   m_Name: 
@@ -1032,6 +1124,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
+--- !u!114 &2025452049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025452040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5aaa057fd3ce242b5a37da5e047d19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Shooter
+  mainCam: {fileID: 330585545}
+  shootPoint: {fileID: 1369803215}
+  bulletPrefab: {fileID: 5823370793434374271, guid: e88a5e14f4c6c44cc988b1af02edd0c6, type: 3}
+  bulletSpeed: 20
+  bulletDamage: 25
+  bulletRange: 50
+  bulletLifetime: 5
+  maxAimDistance: 1000
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &2025452050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025452040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e46eaaf53893fb044a32f8e984c67ee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LobSpell
+  mainCam: {fileID: 330585545}
+  castPoint: {fileID: 1369803215}
+  lobProjectilePrefab: {fileID: 5823370793434374271, guid: f7bcf046498dc9b4b80fccb326f2c14c, type: 3}
+  maxAimDistance: 1000
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  launchSpeed: 7
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

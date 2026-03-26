@@ -2,21 +2,25 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
+    [Header("References")]
+    public Camera mainCam;
+    public Transform shootPoint;         // spawn point of the projectiles
+
     [Header("Bullet")]
-    public GameObject bulletPrefab;    // Drag bullet Prefab here
-    public float bulletSpeed = 15f;
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 20f;
     public float bulletDamage = 25f;
-    public float bulletRange = 20f;
-    public float bulletLifetime = 5f;  // Fallback destroy time if bullet never hits anything
+    public float bulletRange = 50f;
+    public float bulletLifetime = 5f;
 
-    [Header("Shoot Height")]
-    public float bulletHeight = 1f;    // Fixed Y height bullets travel at
-
-    Camera mainCam;
+    [Header("Aiming")]
+    public float maxAimDistance = 1000f;
+    public LayerMask aimLayers = ~0;
 
     void Start()
     {
-        mainCam = Camera.main;
+        if (mainCam == null)
+            mainCam = Camera.main;
     }
 
     void Update()
@@ -27,29 +31,34 @@ public class Shooter : MonoBehaviour
 
     void Shoot()
     {
-        // Cast a ray from mouse position onto a horizontal plane at bullet height
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-        Plane plane = new Plane(Vector3.up, new Vector3(0f, bulletHeight, 0f));
+        if (bulletPrefab == null || mainCam == null) return;
 
-        if (!plane.Raycast(ray, out float dist)) return;
+        Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
-        Vector3 targetPoint = ray.GetPoint(dist);
+        Vector3 targetPoint;
+        if (Physics.Raycast(ray, out RaycastHit hit, maxAimDistance, aimLayers))
+            targetPoint = hit.point;
+        else
+            targetPoint = ray.origin + ray.direction * maxAimDistance;
 
-        // Spawn position: same XZ as player, fixed Y height
-        Vector3 spawnPos = new Vector3(transform.position.x, bulletHeight, transform.position.z);
+        Vector3 spawnPos = shootPoint != null
+            ? shootPoint.position
+            : transform.position + Vector3.up * 1.2f;
 
-        // Direction is XZ only — height never changes
         Vector3 dir = (targetPoint - spawnPos).normalized;
 
-        GameObject bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.LookRotation(dir));
+        GameObject bullet = Instantiate(
+            bulletPrefab,
+            spawnPos,
+            Quaternion.LookRotation(dir)
+        );
 
-        // Pass stats to bullet
         Bullet b = bullet.GetComponent<Bullet>();
         if (b != null)
         {
             b.damage = bulletDamage;
-            b.speed  = bulletSpeed;
-            b.range  = bulletRange;
+            b.speed = bulletSpeed;
+            b.range = bulletRange;
         }
 
         Destroy(bullet, bulletLifetime);

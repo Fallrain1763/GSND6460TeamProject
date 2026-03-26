@@ -15,10 +15,9 @@ public class Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezePositionY  // Lock to fixed height
-                         | RigidbodyConstraints.FreezeRotationX
-                         | RigidbodyConstraints.FreezeRotationY
-                         | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX
+                        | RigidbodyConstraints.FreezeRotationY
+                        | RigidbodyConstraints.FreezeRotationZ;
 
         // Ignore collision with the Player so bullet doesn't destroy itself on spawn
         GameObject player = GameObject.FindWithTag("Player");

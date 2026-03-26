@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class OLDCameraFollow : MonoBehaviour
 {
     [Header("Target")]
     public Transform target;           // Drag Player here
