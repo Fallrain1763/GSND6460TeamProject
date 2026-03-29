@@ -1478,7 +1478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellCaster
   mainCam: {fileID: 330585545}
   castPoint: {fileID: 1369803215}
-  selectedSpell: {fileID: 11400000, guid: 0e2624c8aec1360469971b4dc10b1a9d, type: 2}
+  selectedSpell: {fileID: 11400000, guid: 8b5ac4b1120f1e741a4afe24f3193625, type: 2}
   maxAimDistance: 1000
   aimLayers:
     serializedVersion: 2

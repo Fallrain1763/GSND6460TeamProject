@@ -52,7 +52,7 @@ public class OLDFireball : MonoBehaviour
             Quaternion.identity
         );
 
-        LobProjectile lob = proj.GetComponent<LobProjectile>();
+        OLDLobProjectile lob = proj.GetComponent<OLDLobProjectile>();
         if (lob != null)
         {
             lob.Launch(launchDir, launchSpeed, gameObject);

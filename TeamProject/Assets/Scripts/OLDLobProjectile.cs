@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
-public class LobProjectile : MonoBehaviour
+public class OLDLobProjectile : MonoBehaviour
 {
     [Header("Damage")]
     public float damage = 40f;
