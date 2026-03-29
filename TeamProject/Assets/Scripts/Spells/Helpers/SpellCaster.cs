@@ -1,0 +1,87 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpellCaster : MonoBehaviour
+{
+    [Header("References")]
+    public Camera mainCam;
+    public Transform castPoint;
+
+    [Header("Spell Inputs")]
+    public SpellBase selectedSpell;
+
+    [Header("Aiming")]
+    public float maxAimDistance = 1000f;
+    public LayerMask aimLayers = ~0;
+
+    Dictionary<SpellBase, float> lastCastTimes = new Dictionary<SpellBase, float>();
+
+    void Start()
+    {
+        if (mainCam == null)
+            mainCam = Camera.main;
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            TryCastSpell(selectedSpell);
+        }
+    }
+
+    void TryCastSpell(SpellBase spell)
+    {
+        if (spell == null || mainCam == null) return;
+
+        if (!CanCast(spell)) return;
+
+        SpellContext context = BuildSpellContext();
+        spell.Cast(context, this);
+        lastCastTimes[spell] = Time.time;
+    }
+
+    bool CanCast(SpellBase spell)
+    {
+        if (spell == null) return false;
+
+        if (!lastCastTimes.TryGetValue(spell, out float lastCastTime))
+            return true;
+
+        return Time.time >= lastCastTime + spell.cooldown;
+    }
+
+    SpellContext BuildSpellContext()
+    {
+        Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
+        Vector3 aimPoint;
+        if (Physics.Raycast(ray, out RaycastHit hit, maxAimDistance, aimLayers))
+            aimPoint = hit.point;
+        else
+            aimPoint = ray.origin + ray.direction * 25f;
+
+        Vector3 origin = castPoint != null
+            ? castPoint.position
+            : transform.position + Vector3.up * 1.2f;
+
+        Vector3 aimDirection = (aimPoint - origin).normalized;
+
+        SpellContext context = new SpellContext();
+        context.origin = origin;
+        context.aimPoint = aimPoint;
+        context.aimDirection = aimDirection;
+
+        return context;
+    }
+
+    public Vector3 GetCurrentAimDirection()
+    {
+        return BuildSpellContext().aimDirection;
+    }
+
+    public Vector3 GetCurrentAimPoint()
+    {
+        return BuildSpellContext().aimPoint;
+    }
+}

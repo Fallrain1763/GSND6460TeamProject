@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Fireball : MonoBehaviour
+public class OLDFireball : MonoBehaviour
 {
     [Header("References")]
     public Camera mainCam;
