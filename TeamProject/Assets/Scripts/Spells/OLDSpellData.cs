@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spells/SpellData")]
-public class SpellData : ScriptableObject
+public class OLDSpellData : ScriptableObject
 {
     public string spellID;
     public string displayName;
