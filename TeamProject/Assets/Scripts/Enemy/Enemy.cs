@@ -15,6 +15,9 @@ public class Enemy : MonoBehaviour
     public float maxHealth = 50f;
     public float damageToPlayer = 10f;
 
+    [Header("Type")]
+    public string enemyTypeName;
+
     [Header("Movement")]
     public Transform target; // Not ideal since this requires manual assignment -- might want to have globally accessible reference instead -RH
     public Animator animator;
@@ -31,7 +34,6 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
         agent = GetComponent<NavMeshAgent>();
 
-        // Currently hardcoded to find player..
         if (target == null) target = GameObject.Find("Player").transform; // I don't like using Find since it's slow but not sure what the best approach is here -RH
     }
 
@@ -55,10 +57,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Called by Bullet on hit
     public void TakeDamage(float amount)
     {
-        // Cancel any velocity from the bullet impact
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
         currentHealth -= amount;
@@ -70,13 +70,13 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        QuestManager.Instance?.ReportEnemyKilled(enemyTypeName);
         Debug.Log("Enemy died!");
         Destroy(gameObject);
     }
 
     void OnCollisionEnter(Collision col)
     {
-        // Deal damage to player on contact
         animator.SetTrigger("hit");
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();
         if (ph != null)
@@ -89,9 +89,7 @@ public class Enemy : MonoBehaviour
         foreach (Collider hitCollider in hitColliders)
         {
             if (hitCollider.gameObject.tag == "Player")
-            {
                 currentState = EnemyState.Chase;
-            }
         }
     }
 
@@ -107,12 +105,12 @@ public class Enemy : MonoBehaviour
 
     public void MoveToTarget()
     {
-         agent.SetDestination(target.position);
+        agent.SetDestination(target.position);
     }
 
-    void OnDrawGizmosSelected() 
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere (transform.position, aggroRadius);
+        Gizmos.DrawWireSphere(transform.position, aggroRadius);
     }
 }
