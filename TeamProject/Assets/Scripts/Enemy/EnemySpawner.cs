@@ -4,6 +4,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("Set Up")]
     public GameObject enemyPrefab;
+    public GameObject rangedEnemyPrefab;
     public float spawnInterval;
 
     float currentTime = 0;
@@ -14,7 +15,11 @@ public class EnemySpawner : MonoBehaviour
         currentTime += Time.deltaTime;
         if (currentTime > spawnInterval)
         {
-            Instantiate(enemyPrefab);
+            int rand = Random.Range(0,2);
+            if (rand == 0)
+                Instantiate(enemyPrefab);
+            else 
+                Instantiate(rangedEnemyPrefab);
             currentTime = 0;
         }
 

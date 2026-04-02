@@ -26,8 +26,8 @@ public class Enemy : MonoBehaviour
     public float aggroRadius = 10f;
 
     float currentHealth;
-    NavMeshAgent agent;
-    EnemyState currentState = EnemyState.Idle;
+    protected NavMeshAgent agent;
+    protected EnemyState currentState = EnemyState.Idle;
 
     void Start()
     {
@@ -51,6 +51,7 @@ public class Enemy : MonoBehaviour
                 ChaseTarget();
                 break;
             case EnemyState.Attack:
+                Attack();
                 break;
             case EnemyState.Die:
                 break;
@@ -66,6 +67,11 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth <= 0f)
             Die();
+    }
+
+    virtual protected void Attack()
+    {
+        Debug.Log("attack!");
     }
 
     void Die()
@@ -90,12 +96,15 @@ public class Enemy : MonoBehaviour
         {
             if (hitCollider.gameObject.tag == "Player")
                 currentState = EnemyState.Chase;
+            else
+                currentState = EnemyState.Idle;
         }
     }
 
-    void ChaseTarget()
+    virtual protected void ChaseTarget()
     {
         agent.SetDestination(target.position);
+        ScanForTarget();
     }
 
     public void ChangeTarget(Transform newTarget)
