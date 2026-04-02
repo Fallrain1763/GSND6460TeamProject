@@ -3,8 +3,8 @@ using UnityEngine;
 public class ThirdPersonCamera : MonoBehaviour
 {
     [Header("Target")]
-    public Transform target;                 // Player root
-    public Transform cameraPivot;            // empty object on player around chest/head height
+    public Transform target;
+    public Transform cameraPivot;
 
     [Header("Position")]
     public Vector3 pivotOffset = new Vector3(0f, 1.6f, 0f);
@@ -21,6 +21,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
     float yaw;
     float pitch;
+
+    public static bool InputLocked = false;
 
     public float Yaw => yaw;
     public Vector3 ForwardFlat
@@ -46,12 +48,15 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (target == null) return;
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        if (!InputLocked)
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        yaw += mouseX;
-        pitch -= mouseY;
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+            yaw   += mouseX;
+            pitch -= mouseY;
+            pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
+        }
 
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 

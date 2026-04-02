@@ -4,7 +4,7 @@ public class Shooter : MonoBehaviour
 {
     [Header("References")]
     public Camera mainCam;
-    public Transform shootPoint;         // spawn point of the projectiles
+    public Transform shootPoint;
 
     [Header("Bullet")]
     public GameObject bulletPrefab;
@@ -25,6 +25,8 @@ public class Shooter : MonoBehaviour
 
     void Update()
     {
+        if (ThirdPersonCamera.InputLocked) return;
+
         if (Input.GetMouseButtonDown(0))
             Shoot();
     }
@@ -57,8 +59,8 @@ public class Shooter : MonoBehaviour
         if (b != null)
         {
             b.damage = bulletDamage;
-            b.speed = bulletSpeed;
-            b.range = bulletRange;
+            b.speed  = bulletSpeed;
+            b.range  = bulletRange;
         }
 
         Destroy(bullet, bulletLifetime);

@@ -22,13 +22,19 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        //prevent tipping
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationZ;
     }
 
     void Update()
     {
+        if (ThirdPersonCamera.InputLocked)
+        {
+            moveDir     = Vector3.zero;
+            jumpPressed = false;
+            return;
+        }
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -39,16 +45,12 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             Vector3 camForward = cameraController.ForwardFlat;
-            Vector3 camRight = Vector3.Cross(Vector3.up, camForward).normalized;
-            
-            //prevent faster diagonal movement with normalize
+            Vector3 camRight   = Vector3.Cross(Vector3.up, camForward).normalized;
             moveDir = (camForward * v + camRight * h).normalized;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
             jumpPressed = true;
-        }
     }
 
     void FixedUpdate()
@@ -64,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
         if (jumpPressed)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            isGrounded = false;
+            isGrounded  = false;
             jumpPressed = false;
         }
 
@@ -86,8 +88,6 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             isGrounded = true;
-        }
     }
 }
