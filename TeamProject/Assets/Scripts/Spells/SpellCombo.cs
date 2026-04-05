@@ -13,7 +13,7 @@ public enum SlotSource
 [Serializable]
 public class SpellCombo
 {
-    public SpellData ingredientA;
-    public SpellData ingredientB;
-    public SpellData result;
+    public SpellBase ingredientA;
+    public SpellBase ingredientB;
+    public SpellBase result;
 }

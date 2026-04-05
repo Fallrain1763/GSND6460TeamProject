@@ -622,13 +622,14 @@ MonoBehaviour:
   inventorySize: 27
   hotbarSize: 5
   startingSpells:
-  - {fileID: 11400000, guid: ad33f4621711f7a4a90298f23cefa7a2, type: 2}
-  - {fileID: 11400000, guid: 3f7de08698434df40a7d6cd026d80403, type: 2}
-  - {fileID: 11400000, guid: b157989fec4d6d4489daca33b2cdcde1, type: 2}
+  - {fileID: 11400000, guid: 71a0cc463d4849a4ea817c1d7839b520, type: 2}
+  - {fileID: 11400000, guid: e7be5fa75b1a2214c91c5892bef7ec2e, type: 2}
+  - {fileID: 11400000, guid: 0e2624c8aec1360469971b4dc10b1a9d, type: 2}
   combos:
-  - ingredientA: {fileID: 11400000, guid: ad33f4621711f7a4a90298f23cefa7a2, type: 2}
-    ingredientB: {fileID: 11400000, guid: 3f7de08698434df40a7d6cd026d80403, type: 2}
-    result: {fileID: 11400000, guid: 7142ec7e94694104eb340b004c7bd7e5, type: 2}
+  - ingredientA: {fileID: 11400000, guid: 71a0cc463d4849a4ea817c1d7839b520, type: 2}
+    ingredientB: {fileID: 11400000, guid: e7be5fa75b1a2214c91c5892bef7ec2e, type: 2}
+    result: {fileID: 11400000, guid: 4a5058047d83b184a9d7706de7004198, type: 2}
+  spellCaster: {fileID: 2025452050}
 --- !u!4 &494647632
 Transform:
   m_ObjectHideFlags: 0
@@ -1347,6 +1348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefab: {fileID: 3976701095412101336, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
+  rangedEnemyPrefab: {fileID: 0}
   spawnInterval: 5
 --- !u!4 &1208158261
 Transform:
@@ -1567,7 +1569,7 @@ Transform:
   m_GameObject: {fileID: 1369803214}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.33, z: 0.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2151,13 +2153,12 @@ GameObject:
   - component: {fileID: 2025452045}
   - component: {fileID: 2025452044}
   - component: {fileID: 2025452043}
+  - component: {fileID: 2025452050}
   - component: {fileID: 2025452042}
   - component: {fileID: 2025452041}
   - component: {fileID: 2025452046}
   - component: {fileID: 2025452048}
-  - component: {fileID: 2025452050}
   - component: {fileID: 2025452049}
-  - component: {fileID: 2025452047}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2306,24 +2307,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2025452047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2025452040}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a794b1ded4e44a41ab29381f364278a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Shooter
-  bulletPrefab: {fileID: 5823370793434374271, guid: e88a5e14f4c6c44cc988b1af02edd0c6, type: 3}
-  bulletSpeed: 15
-  bulletDamage: 25
-  bulletRange: 20
-  bulletLifetime: 5
-  bulletHeight: 1
 --- !u!114 &2025452048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2369,17 +2352,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2025452040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e46eaaf53893fb044a32f8e984c67ee0, type: 3}
+  m_Script: {fileID: 11500000, guid: 7259e925062ea0f4b990e060c23f53e5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LobSpell
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCaster
   mainCam: {fileID: 330585545}
   castPoint: {fileID: 1369803215}
-  lobProjectilePrefab: {fileID: 5823370793434374271, guid: f7bcf046498dc9b4b80fccb326f2c14c, type: 3}
+  selectedSpell: {fileID: 0}
   maxAimDistance: 1000
   aimLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  launchSpeed: 7
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
