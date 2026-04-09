@@ -123,10 +123,13 @@ public class ProceduralTerrainGenerator : MonoBehaviour
         BuildSnowyRidges (t[TL].terrainData);
         BuildRockyPlateau(t[TR].terrainData);
 
-        PaintTerrain(t[BL].terrainData, BiomeType.Grassy);
-        PaintTerrain(t[BR].terrainData, BiomeType.Lake);
-        PaintTerrain(t[TL].terrainData, BiomeType.Snowy);
-        PaintTerrain(t[TR].terrainData, BiomeType.Rocky);
+        //                                biome           left            right           bottom          top
+        // BL Grassy: snowy is above (top), no other neighbours
+        PaintTerrain(t[BL].terrainData, BiomeType.Grassy,  null,           BiomeType.Lake,  null,           BiomeType.Snowy);
+        // BR Lake: grassy is left, rocky is above (top)
+        PaintTerrain(t[BR].terrainData, BiomeType.Lake,    BiomeType.Grassy, null,          null,           BiomeType.Rocky);
+        PaintTerrain(t[TL].terrainData, BiomeType.Snowy,   null,           null,           null,           null);
+        PaintTerrain(t[TR].terrainData, BiomeType.Rocky,   BiomeType.Snowy, null,          null,           null);
 
         foreach (var terrain in t) terrain.Flush();
 
@@ -160,15 +163,6 @@ public class ProceduralTerrainGenerator : MonoBehaviour
         go.transform.SetParent(_root.transform);
         go.transform.position = pos;
 
-        try
-        {
-            go.tag = "Ground";
-        }
-        catch (UnityException)
-        {
-            Debug.LogWarning("Tag 'Ground' does not exist. Add it in the Tag Manager.");
-        }
-
         var td  = new TerrainData();
         int res = NextPow2(Mathf.Max(quadWidth, quadLength)) + 1;
         td.heightmapResolution = res;
@@ -176,14 +170,14 @@ public class ProceduralTerrainGenerator : MonoBehaviour
         td.size = new Vector3(quadWidth, quadHeight, quadLength);
         td.name = name + "_Data";
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         string folder = "Assets/GeneratedTerrains";
         if (!AssetDatabase.IsValidFolder(folder))
             AssetDatabase.CreateFolder("Assets", "GeneratedTerrains");
         string path = $"{folder}/{name}_Data.asset";
         AssetDatabase.DeleteAsset(path);
         AssetDatabase.CreateAsset(td, path);
-    #endif
+#endif
 
         var terrain  = go.AddComponent<Terrain>();
         var col      = go.AddComponent<TerrainCollider>();
@@ -328,36 +322,73 @@ public class ProceduralTerrainGenerator : MonoBehaviour
 
     enum BiomeType { Grassy, Lake, Snowy, Rocky }
 
-    void PaintTerrain(TerrainData td, BiomeType biome)
+    // Border blend band width (fraction of quadrant)
+    const float EDGE_BLEND = 0.05f;
+    // How much Perlin noise warps the border line
+    const float EDGE_WARP  = 0.05f;
+    // Scale of the warp noise
+    const float WARP_SCALE = 2f;
+
+    // Neighbour texture blend pairs per edge:
+    // Each quadrant blends toward the texture of its actual neighbour.
+    // Layout:  BL=Grassy  BR=Lake
+    //          TL=Snowy   TR=Rocky
+    //
+    // Shared borders:
+    //   BL right  ↔ BR left   (Grassy ↔ Lake)   → blend grass into sand
+    //   BL top    ↔ TL bottom (Grassy ↔ Snowy)  → blend grass into snow
+    //   BR top    ↔ TR bottom (Lake   ↔ Rocky)  → blend sand into rock
+    //   TL right  ↔ TR left   (Snowy  ↔ Rocky)  → blend snow into rock
+
+    void PaintTerrain(TerrainData td, BiomeType biome,
+                      BiomeType? leftNeighbour,  BiomeType? rightNeighbour,
+                      BiomeType? bottomNeighbour, BiomeType? topNeighbour)
     {
+        // Primary and secondary textures for this biome
         Texture2D texA, texB;
         Color colA, colB;
         float tileA, tileB;
+        GetBiomeTextures(biome, out texA, out colA, out tileA, out texB, out colB, out tileB);
 
-        switch (biome)
+        // Neighbour blend textures (we use their primary texture as the blend target)
+        Texture2D texLeft   = leftNeighbour   != null ? GetPrimaryTex(leftNeighbour.Value)   : null;
+        Texture2D texRight  = rightNeighbour  != null ? GetPrimaryTex(rightNeighbour.Value)  : null;
+        Texture2D texBottom = bottomNeighbour != null ? GetPrimaryTex(bottomNeighbour.Value) : null;
+        Texture2D texTop    = topNeighbour    != null ? GetPrimaryTex(topNeighbour.Value)    : null;
+
+        Color colLeft   = leftNeighbour   != null ? GetPrimaryColor(leftNeighbour.Value)   : Color.white;
+        Color colRight  = rightNeighbour  != null ? GetPrimaryColor(rightNeighbour.Value)  : Color.white;
+        Color colBottom = bottomNeighbour != null ? GetPrimaryColor(bottomNeighbour.Value) : Color.white;
+        Color colTop    = topNeighbour    != null ? GetPrimaryColor(topNeighbour.Value)    : Color.white;
+
+        // Build layer list: always A, B, then any unique neighbour textures
+        var layerTextures = new List<Texture2D> { texA, texB };
+        var layerColors   = new List<Color>     { colA, colB };
+        var layerTiles    = new List<float>      { tileA, tileB };
+
+        int idxLeft=-1, idxRight=-1, idxBottom=-1, idxTop=-1;
+
+        int AddOrFind(Texture2D tex, Color col, float tile)
         {
-            case BiomeType.Lake:
-                texA=sandTex;  colA=new Color(0.82f,0.74f,0.45f); tileA=6f;
-                texB=grassTex; colB=new Color(0.18f,0.52f,0.15f); tileB=8f;
-                break;
-            case BiomeType.Snowy:
-                texA=snowTex; colA=new Color(0.90f,0.93f,0.96f); tileA=8f;
-                texB=dirtTex; colB=new Color(0.50f,0.33f,0.16f); tileB=6f;
-                break;
-            case BiomeType.Rocky:
-                texA=rockTex; colA=new Color(0.48f,0.46f,0.44f); tileA=5f;
-                texB=dirtTex; colB=new Color(0.50f,0.33f,0.16f); tileB=6f;
-                break;
-            default:
-                texA=grassTex; colA=new Color(0.18f,0.52f,0.15f); tileA=8f;
-                texB=dirtTex;  colB=new Color(0.50f,0.33f,0.16f); tileB=6f;
-                break;
+            // Reuse existing slot if same texture
+            for (int i = 0; i < layerTextures.Count; i++)
+                if (layerTextures[i] == tex) return i;
+            layerTextures.Add(tex ?? SolidTex(col));
+            layerColors.Add(col);
+            layerTiles.Add(tile);
+            return layerTextures.Count - 1;
         }
 
-        td.terrainLayers = SaveLayers(biome.ToString(), texA, colA, tileA, texB, colB, tileB);
+        if (leftNeighbour   != null) idxLeft   = AddOrFind(texLeft,   colLeft,   tileA);
+        if (rightNeighbour  != null) idxRight  = AddOrFind(texRight,  colRight,  tileA);
+        if (bottomNeighbour != null) idxBottom = AddOrFind(texBottom, colBottom, tileA);
+        if (topNeighbour    != null) idxTop    = AddOrFind(texTop,    colTop,    tileA);
+
+        int numLayers = layerTextures.Count;
+        td.terrainLayers = SaveNLayers(biome.ToString(), layerTextures, layerColors, layerTiles);
 
         int res = td.alphamapResolution;
-        var map = new float[res, res, 2];
+        var map = new float[res, res, numLayers];
         Vector2 lakeCentre = new Vector2(0.5f, 0.5f);
 
         for (int z = 0; z < res; z++)
@@ -366,61 +397,136 @@ public class ProceduralTerrainGenerator : MonoBehaviour
             float nx    = (float)x / (res - 1);
             float nz    = (float)z / (res - 1);
             float steep = td.GetSteepness(nx, nz);
-            float normH = td.GetInterpolatedHeight(nx, nz) / td.size.y;
-            float wB;   // weight of layer B
 
+            // Base A/B weights from biome logic
+            float wB;
             switch (biome)
             {
-                case BiomeType.Grassy:
-                    wB = Mathf.Clamp01((steep - 12f) / 10f);
-                    break;
+                case BiomeType.Grassy: wB = Mathf.Clamp01((steep - 12f) / 10f); break;
                 case BiomeType.Lake:
-                    // Sand fills a large circle, grass only at the edges
-                    float dist  = Vector2.Distance(new Vector2(nx, nz), lakeCentre);
-                    float sandT = 1f - Mathf.Clamp01((dist - lakeRadius) / (shoreWidth * 2f));
-                    wB = 1f - sandT; // wB = grass weight
+                    float dist = Vector2.Distance(new Vector2(nx, nz), lakeCentre);
+                    // wB = sand weight — high near centre, zero beyond shore
+                    wB = 1f - Mathf.Clamp01((dist - lakeRadius) / (shoreWidth * 2f));
                     break;
-                case BiomeType.Snowy:
-                    // texA=snow, texB=dirt on slopes
-                    wB = Mathf.Clamp01((steep - 10f) / 8f);
-                    break;
-                case BiomeType.Rocky:
-                    // texA=rock, texB=dirt on steep slopes
-                    wB = Mathf.Clamp01((steep - 15f) / 10f);
-                    break;
-                default:
-                    wB = 0f;
-                    break;
+                case BiomeType.Snowy: wB = Mathf.Clamp01((steep - 10f) / 8f); break;
+                case BiomeType.Rocky: wB = Mathf.Clamp01((steep - 15f) / 10f); break;
+                default: wB = 0f; break;
             }
 
-            map[z, x, 0] = 1f - wB;
-            map[z, x, 1] = wB;
+            float wA = 1f - wB;
+
+            // Perlin warp offsets for each edge — makes the border curvy
+            float warpL = EDGE_WARP * (Mathf.PerlinNoise(nz * WARP_SCALE + 10f, 0.1f) - 0.5f);
+            float warpR = EDGE_WARP * (Mathf.PerlinNoise(nz * WARP_SCALE + 20f, 0.2f) - 0.5f);
+            float warpB = EDGE_WARP * (Mathf.PerlinNoise(nx * WARP_SCALE + 30f, 0.3f) - 0.5f);
+            float warpT = EDGE_WARP * (Mathf.PerlinNoise(nx * WARP_SCALE + 40f, 0.4f) - 0.5f);
+
+            // Warped distances from each edge (0=at edge, 1=past blend band)
+            float dLeft   = Mathf.Clamp01((nx + warpL) / EDGE_BLEND);
+            float dRight  = Mathf.Clamp01(((1f - nx) + warpR) / EDGE_BLEND);
+            float dBottom = Mathf.Clamp01((nz + warpB) / EDGE_BLEND);
+            float dTop    = Mathf.Clamp01(((1f - nz) + warpT) / EDGE_BLEND);
+
+            // Neighbour blend weights (SmoothStep for soft falloff)
+            float wLeft   = idxLeft   >= 0 ? Mathf.SmoothStep(1f, 0f, dLeft)   : 0f;
+            float wRight  = idxRight  >= 0 ? Mathf.SmoothStep(1f, 0f, dRight)  : 0f;
+            float wBottom = idxBottom >= 0 ? Mathf.SmoothStep(1f, 0f, dBottom) : 0f;
+            float wTop    = idxTop    >= 0 ? Mathf.SmoothStep(1f, 0f, dTop)    : 0f;
+
+            float totalNeighbour = wLeft + wRight + wBottom + wTop;
+            // Cap neighbour blend so biome textures always show in the centre
+            totalNeighbour = Mathf.Min(totalNeighbour, 0.85f);
+            float biomeScale = 1f - totalNeighbour;
+
+            float[] w = new float[numLayers];
+            w[0] = wA * biomeScale;
+            w[1] = wB * biomeScale;
+            if (idxLeft   >= 0) w[idxLeft]   += wLeft;
+            if (idxRight  >= 0) w[idxRight]  += wRight;
+            if (idxBottom >= 0) w[idxBottom] += wBottom;
+            if (idxTop    >= 0) w[idxTop]    += wTop;
+
+            // Normalize
+            float sum = 0f;
+            for (int l = 0; l < numLayers; l++) sum += w[l];
+            for (int l = 0; l < numLayers; l++) map[z, x, l] = sum > 0f ? w[l] / sum : 0f;
         }
 
         td.SetAlphamaps(0, 0, map);
     }
 
-    TerrainLayer[] SaveLayers(string id,
-        Texture2D tA, Color cA, float sA,
-        Texture2D tB, Color cB, float sB)
+    void GetBiomeTextures(BiomeType b,
+        out Texture2D tA, out Color cA, out float sA,
+        out Texture2D tB, out Color cB, out float sB)
     {
-        var lA = new TerrainLayer { diffuseTexture = tA ?? SolidTex(cA), tileSize = Vector2.one * sA };
-        var lB = new TerrainLayer { diffuseTexture = tB ?? SolidTex(cB), tileSize = Vector2.one * sB };
+        switch (b)
+        {
+            case BiomeType.Lake:
+                tA=grassTex; cA=new Color(0.18f,0.52f,0.15f); sA=8f;
+                tB=sandTex;  cB=new Color(0.82f,0.74f,0.45f); sB=6f; return;
+            case BiomeType.Snowy:
+                tA=snowTex; cA=new Color(0.90f,0.93f,0.96f); sA=8f;
+                tB=dirtTex; cB=new Color(0.50f,0.33f,0.16f); sB=6f; return;
+            case BiomeType.Rocky:
+                tA=rockTex; cA=new Color(0.48f,0.46f,0.44f); sA=5f;
+                tB=dirtTex; cB=new Color(0.50f,0.33f,0.16f); sB=6f; return;
+            default:
+                tA=grassTex; cA=new Color(0.18f,0.52f,0.15f); sA=8f;
+                tB=dirtTex;  cB=new Color(0.50f,0.33f,0.16f); sB=6f; return;
+        }
+    }
+
+    Texture2D GetPrimaryTex(BiomeType b)
+    {
+        switch (b)
+        {
+            case BiomeType.Lake:   return grassTex ?? SolidTex(new Color(0.18f,0.52f,0.15f));
+            case BiomeType.Snowy:  return snowTex  ?? SolidTex(new Color(0.90f,0.93f,0.96f));
+            case BiomeType.Rocky:  return rockTex  ?? SolidTex(new Color(0.48f,0.46f,0.44f));
+            default:               return grassTex ?? SolidTex(new Color(0.18f,0.52f,0.15f));
+        }
+    }
+
+    Color GetPrimaryColor(BiomeType b)
+    {
+        switch (b)
+        {
+            case BiomeType.Lake:  return new Color(0.18f,0.52f,0.15f);
+            case BiomeType.Snowy: return new Color(0.90f,0.93f,0.96f);
+            case BiomeType.Rocky: return new Color(0.48f,0.46f,0.44f);
+            default:              return new Color(0.18f,0.52f,0.15f);
+        }
+    }
+
+    TerrainLayer[] SaveNLayers(string id, List<Texture2D> textures, List<Color> colors, List<float> tiles)
+    {
+        var layers = new TerrainLayer[textures.Count];
+        for (int i = 0; i < textures.Count; i++)
+            layers[i] = new TerrainLayer
+            {
+                diffuseTexture = textures[i] ?? SolidTex(colors[i]),
+                tileSize       = Vector2.one * tiles[i]
+            };
 
 #if UNITY_EDITOR
         string folder = "Assets/GeneratedTerrains";
         if (!AssetDatabase.IsValidFolder(folder))
             AssetDatabase.CreateFolder("Assets", "GeneratedTerrains");
 
-        string pA = $"{folder}/Layer_{id}_A.terrainlayer";
-        string pB = $"{folder}/Layer_{id}_B.terrainlayer";
-        AssetDatabase.DeleteAsset(pA); AssetDatabase.DeleteAsset(pB);
-        AssetDatabase.CreateAsset(lA, pA); AssetDatabase.CreateAsset(lB, pB);
+        for (int i = 0; i < layers.Length; i++)
+        {
+            string p = $"{folder}/Layer_{id}_{i}.terrainlayer";
+            AssetDatabase.DeleteAsset(p);
+            AssetDatabase.CreateAsset(layers[i], p);
+        }
         AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
-        lA = AssetDatabase.LoadAssetAtPath<TerrainLayer>(pA);
-        lB = AssetDatabase.LoadAssetAtPath<TerrainLayer>(pB);
+        for (int i = 0; i < layers.Length; i++)
+        {
+            string p = $"{folder}/Layer_{id}_{i}.terrainlayer";
+            layers[i] = AssetDatabase.LoadAssetAtPath<TerrainLayer>(p);
+        }
 #endif
-        return new[] { lA, lB };
+        return layers;
     }
 
     Texture2D SolidTex(Color c)
