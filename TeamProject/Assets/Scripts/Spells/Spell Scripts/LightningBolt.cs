@@ -4,12 +4,13 @@ using UnityEngine;
 public class LightningBolt : SpellBase
 {
     [Header("Line")]
-    public float lineLength = 12f;
-    public float lineRadius = 0.75f;
+    public float length = 10f;
+    public float radius = 0.75f;
     public LayerMask targetLayers = ~0;
 
     [Header("Effect")]
-    public float damage = 25f;
+    public float damage = 35f;
+    public float stunDuration = 0.5f;
 
     public override void Cast(SpellContext context, SpellCaster caster)
     {
@@ -21,21 +22,25 @@ public class LightningBolt : SpellBase
         Collider[] hits = SpellShape.Line(
             resolvedContext.origin,
             resolvedContext.aimDirection,
-            lineLength,
-            lineRadius,
+            length,
+            radius,
             targetLayers
         );
 
         foreach (Collider hit in hits)
         {
-            if (hit.CompareTag("Enemy"))
-            {
-                Enemy enemy = hit.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(damage);
-                }
-            }
+            if (!hit.CompareTag("Enemy"))
+                continue;
+
+            Enemy enemy = hit.GetComponent<Enemy>();
+            if (enemy == null)
+                continue;
+
+            if (damage > 0f)
+                enemy.TakeDamage(damage);
+
+            if (stunDuration > 0f)
+                enemy.ApplyStun(stunDuration);
         }
     }
 }

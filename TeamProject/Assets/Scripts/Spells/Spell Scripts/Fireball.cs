@@ -12,8 +12,13 @@ public class Fireball : SpellBase
     public float explosionRadius = 4f;
     public LayerMask targetLayers = ~0;
 
-    [Header("Effect")]
+    [Header("Direct Damage")]
     public float damage = 40f;
+
+    [Header("Burn DoT")]
+    public float burnDuration = 3f;
+    public float burnTickInterval = 1f;
+    public float burnDamagePerTick = 5f;
 
     public override void Cast(SpellContext context, SpellCaster caster)
     {
@@ -29,20 +34,30 @@ public class Fireball : SpellBase
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Burst(
-            resolvedContext.aimPoint,
+            resolvedContext.origin,
             explosionRadius,
             targetLayers
         );
 
         foreach (Collider hit in hits)
         {
-            if (hit.CompareTag("Enemy"))
+            if (!hit.CompareTag("Enemy"))
+                continue;
+
+            Enemy enemy = hit.GetComponent<Enemy>();
+            if (enemy == null)
+                continue;
+
+            if (damage > 0f)
+                enemy.TakeDamage(damage);
+
+            if (burnDuration > 0f && burnDamagePerTick > 0f)
             {
-                Enemy enemy = hit.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(damage);
-                }
+                enemy.ApplyDamageOverTime(
+                    burnDuration,
+                    burnTickInterval,
+                    burnDamagePerTick
+                );
             }
         }
     }

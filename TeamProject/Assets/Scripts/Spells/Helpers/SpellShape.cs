@@ -44,6 +44,7 @@ public static class SpellShape
     // -------------------------
     // CONE
     // -------------------------
+    /*
     public static Collider[] Cone(Vector3 origin, Vector3 direction, float range, float angleDegrees, LayerMask targetLayers)
     {
         Collider[] possibleHits = Physics.OverlapSphere(origin, range, targetLayers);
@@ -55,7 +56,6 @@ public static class SpellShape
         foreach (Collider hit in possibleHits)
         {
             Vector3 toTarget = hit.transform.position - origin;
-            toTarget.y = 0f;
 
             if (toTarget.sqrMagnitude <= 0.001f)
                 continue;
@@ -73,6 +73,7 @@ public static class SpellShape
 
         return validHits.ToArray();
     }
+    */
 
     // =========================================================
     // DEBUG DRAW HELPERS
@@ -103,19 +104,25 @@ public static class SpellShape
         CleanupMarker(marker);
     }
 
+    /*
     static void DrawCone(Vector3 origin, Vector3 forward, float range, float angle)
     {
-        // Super simple approximation: just a sphere at the end
-        Vector3 tip = origin + forward * range;
+        int steps = 12;
+        float halfAngle = angle * 0.5f;
 
-        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        marker.transform.position = tip;
+        for (int i = 0; i < steps; i++)
+        {
+            float t = i / (float)(steps - 1);
+            float currentAngle = Mathf.Lerp(-halfAngle, halfAngle, t);
 
-        float coneWidth = Mathf.Tan(Mathf.Deg2Rad * angle * 0.5f) * range;
-        marker.transform.localScale = Vector3.one * coneWidth * 2f;
+            Vector3 dir = Quaternion.AngleAxis(currentAngle, Vector3.up) * forward;
+            Debug.DrawRay(origin, dir * range, Color.yellow, debugDuration);
+        }
 
-        CleanupMarker(marker);
+        // center line
+        Debug.DrawRay(origin, forward * range, Color.red, debugDuration);
     }
+    */
 
     static void CleanupMarker(GameObject marker)
     {

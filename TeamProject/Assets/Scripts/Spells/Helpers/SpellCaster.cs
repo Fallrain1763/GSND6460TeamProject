@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,10 +12,13 @@ public class SpellCaster : MonoBehaviour
     public SpellBase selectedSpell;
 
     [Header("Aiming")]
-    public float maxAimDistance = 1000f;
+    public float maxAimDistance = 50f;
     public LayerMask aimLayers = ~0;
 
     Dictionary<SpellBase, float> lastCastTimes = new Dictionary<SpellBase, float>();
+
+    bool isChanneling = false;
+    public bool IsChanneling => isChanneling;
 
     void Start()
     {
@@ -24,6 +28,9 @@ public class SpellCaster : MonoBehaviour
 
     void Update()
     {
+        if (isChanneling)
+            return;
+
         if (Input.GetMouseButtonDown(1))
         {
             TryCastSpell(selectedSpell);
@@ -33,7 +40,6 @@ public class SpellCaster : MonoBehaviour
     void TryCastSpell(SpellBase spell)
     {
         if (spell == null || mainCam == null) return;
-
         if (!CanCast(spell)) return;
 
         SpellContext context = BuildSpellContext();
@@ -83,5 +89,15 @@ public class SpellCaster : MonoBehaviour
     public Vector3 GetCurrentAimPoint()
     {
         return BuildSpellContext().aimPoint;
+    }
+
+    public Coroutine RunSpellRoutine(IEnumerator routine)
+    {
+        return StartCoroutine(routine);
+    }
+
+    public void SetChanneling(bool value)
+    {
+        isChanneling = value;
     }
 }

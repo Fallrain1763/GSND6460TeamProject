@@ -19,6 +19,9 @@ public class ThirdPersonCamera : MonoBehaviour
     [Header("Smoothing")]
     public float followSmoothness = 20f;
 
+    [Header("External Modifiers")]
+    public float lookSensitivityMultiplier = 1f;
+
     float yaw;
     float pitch;
 
@@ -50,8 +53,10 @@ public class ThirdPersonCamera : MonoBehaviour
 
         if (!InputLocked)
         {
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+            float actualSensitivity = mouseSensitivity * lookSensitivityMultiplier;
+
+            float mouseX = Input.GetAxis("Mouse X") * actualSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * actualSensitivity;
 
             yaw   += mouseX;
             pitch -= mouseY;
@@ -76,5 +81,10 @@ public class ThirdPersonCamera : MonoBehaviour
         );
 
         transform.rotation = rotation;
+    }
+
+    public void SetLookSensitivityMultiplier(float multiplier)
+    {
+        lookSensitivityMultiplier = Mathf.Max(0f, multiplier);
     }
 }

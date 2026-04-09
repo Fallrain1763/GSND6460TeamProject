@@ -160,6 +160,15 @@ public class ProceduralTerrainGenerator : MonoBehaviour
         go.transform.SetParent(_root.transform);
         go.transform.position = pos;
 
+        try
+        {
+            go.tag = "Ground";
+        }
+        catch (UnityException)
+        {
+            Debug.LogWarning("Tag 'Ground' does not exist. Add it in the Tag Manager.");
+        }
+
         var td  = new TerrainData();
         int res = NextPow2(Mathf.Max(quadWidth, quadLength)) + 1;
         td.heightmapResolution = res;
@@ -167,14 +176,14 @@ public class ProceduralTerrainGenerator : MonoBehaviour
         td.size = new Vector3(quadWidth, quadHeight, quadLength);
         td.name = name + "_Data";
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         string folder = "Assets/GeneratedTerrains";
         if (!AssetDatabase.IsValidFolder(folder))
             AssetDatabase.CreateFolder("Assets", "GeneratedTerrains");
         string path = $"{folder}/{name}_Data.asset";
         AssetDatabase.DeleteAsset(path);
         AssetDatabase.CreateAsset(td, path);
-#endif
+    #endif
 
         var terrain  = go.AddComponent<Terrain>();
         var col      = go.AddComponent<TerrainCollider>();

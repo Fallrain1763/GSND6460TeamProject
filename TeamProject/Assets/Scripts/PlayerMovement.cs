@@ -14,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     public ThirdPersonCamera cameraController;
 
+    [Header("External Modifiers")]
+    public float moveSpeedMultiplier = 1f;
+
     Rigidbody rb;
     Vector3 moveDir;
     bool jumpPressed;
@@ -55,10 +58,12 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        float actualMoveSpeed = moveSpeed * moveSpeedMultiplier;
+
         Vector3 velocity = new Vector3(
-            moveDir.x * moveSpeed,
+            moveDir.x * actualMoveSpeed,
             rb.linearVelocity.y,
-            moveDir.z * moveSpeed
+            moveDir.z * actualMoveSpeed
         );
 
         rb.linearVelocity = velocity;
@@ -89,5 +94,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
             isGrounded = true;
+    }
+
+    public void SetMoveSpeedMultiplier(float multiplier)
+    {
+        moveSpeedMultiplier = Mathf.Max(0f, multiplier);
     }
 }

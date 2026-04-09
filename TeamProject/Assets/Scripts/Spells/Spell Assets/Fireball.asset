@@ -18,9 +18,12 @@ MonoBehaviour:
   cooldown: 2
   projectilePrefab: {fileID: 6257317749201331315, guid: 54401c250cba346499bc1951b22c00f7, type: 3}
   launchSpeed: 14
-  upwardArc: 6
+  upwardArc: 5
   explosionRadius: 4
   targetLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   damage: 40
+  burnDuration: 3
+  burnTickInterval: 1
+  burnDamagePerTick: 5
