@@ -17,6 +17,7 @@ public class RangedEnemy : Enemy
     {
         if (!isAttacking)
         {
+            animator.SetBool("walk", false);
             transform.LookAt(target);
             isAttacking = true;
             animator.SetTrigger("hit");

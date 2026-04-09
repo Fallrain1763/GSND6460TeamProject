@@ -11,6 +11,9 @@ public class Bullet : MonoBehaviour
     Rigidbody rb;
     Vector3 spawnPos;
 
+    // Ray additions for vfx
+    public GameObject impactParticles;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -43,6 +46,7 @@ public class Bullet : MonoBehaviour
         Enemy enemy = col.gameObject.GetComponent<Enemy>();
         if (enemy != null)
         {
+            Instantiate(impactParticles, col.gameObject.transform.position, Quaternion.identity);
             enemy.TakeDamage(damage);
             Destroy(gameObject); // Bullet disappears on enemy hit
             return;

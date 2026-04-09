@@ -19,7 +19,7 @@ public class EnemySpawner : MonoBehaviour
             if (rand == 0)
                 Instantiate(enemyPrefab);
             else 
-                Instantiate(rangedEnemyPrefab);
+                //Instantiate(rangedEnemyPrefab);
             currentTime = 0;
         }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -8,6 +9,10 @@ public class PlayerHealth : MonoBehaviour
 
     float currentHealth;
 
+    [Header("i-frames")]
+    public float iframeDuration = 5f;
+    public bool isInvulnerable = false;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -16,17 +21,27 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (isInvulnerable) return;
         currentHealth -= amount;
         Debug.Log($"Player HP: {currentHealth}/{maxHealth}");
         ui.UpdateUI(currentHealth/maxHealth);
 
         if (currentHealth <= 0f)
             Die();
+            
+        StartCoroutine(StartIFrame());
     }
 
     void Die()
     {
         Debug.Log("Player died!");
         gameObject.SetActive(false);
+    }
+
+    IEnumerator StartIFrame()
+    {
+        isInvulnerable = true;
+        yield return new WaitForSecondsRealtime(iframeDuration);
+        isInvulnerable = false;
     }
 }

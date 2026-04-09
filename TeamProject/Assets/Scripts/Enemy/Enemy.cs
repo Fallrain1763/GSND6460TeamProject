@@ -45,9 +45,11 @@ public class Enemy : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Idle:
+                animator.SetBool("walk", false);
                 ScanForTarget();
                 break;
             case EnemyState.Chase:
+                animator.SetBool("walk", true);
                 ChaseTarget();
                 break;
             case EnemyState.Attack:
@@ -66,7 +68,14 @@ public class Enemy : MonoBehaviour
         Debug.Log($"Enemy HP: {currentHealth}/{maxHealth}");
 
         if (currentHealth <= 0f)
+        {
             Die();
+        }
+        else
+        {
+            GetComponent<AudioSource>().Play();
+            animator.SetTrigger("hurt");
+        }
     }
 
     virtual protected void Attack()
@@ -76,9 +85,10 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        animator.Play("die");
         QuestManager.Instance?.ReportEnemyKilled(enemyTypeName);
         Debug.Log("Enemy died!");
-        Destroy(gameObject);
+        Destroy(gameObject, 5f);
     }
 
     void OnCollisionEnter(Collision col)

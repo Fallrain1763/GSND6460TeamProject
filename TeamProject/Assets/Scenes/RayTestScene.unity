@@ -611,7 +611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3976701095412101336, guid: 54fa4f31f9846714ab775727c35c9fca, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8092440914000908321, guid: 54fa4f31f9846714ab775727c35c9fca, type: 3}
       propertyPath: m_LocalPosition.x
@@ -674,7 +674,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1208158260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,7 +699,7 @@ Transform:
   m_GameObject: {fileID: 1208158259}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.19, y: 1.52, z: -8.17}
+  m_LocalPosition: {x: -12.19, y: 3.7, z: -8.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -715,7 +715,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3976701095412101336, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
       propertyPath: m_Name
-      value: Enemy
+      value: EnemyTEST
       objectReference: {fileID: 0}
     - target: {fileID: 3976701095412101336, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
       propertyPath: m_IsActive
@@ -765,6 +765,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 2025452045}
+    - target: {fileID: 8176719139304251200, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
+      propertyPath: maxHealth
+      value: 500
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -929,6 +933,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2868574520284856529, guid: 9e746b94f129c83408b871acd68605af, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 5823370793434374271, guid: b57c77685425ea049bbf6602987dabe6, type: 3}
     - target: {fileID: 4488182261718889720, guid: 9e746b94f129c83408b871acd68605af, type: 3}
       propertyPath: m_Name
       value: PlayerController
@@ -972,6 +980,10 @@ PrefabInstance:
     - target: {fileID: 5179615955403427508, guid: 9e746b94f129c83408b871acd68605af, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5328231077715245054, guid: 9e746b94f129c83408b871acd68605af, type: 3}
+      propertyPath: iframeDuration
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7247665305473381177, guid: 9e746b94f129c83408b871acd68605af, type: 3}
       propertyPath: healthbar
