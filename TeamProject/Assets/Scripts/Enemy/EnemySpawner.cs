@@ -15,7 +15,6 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        spawnWeights = spawnWeightCollection.spawnWeights;
         SetUpRateThresholds(); 
     }
 
@@ -34,6 +33,7 @@ public class EnemySpawner : MonoBehaviour
 
     void SetUpRateThresholds()
     {
+        spawnWeights = spawnWeightCollection.spawnWeights;
         rateThresholds = new int[spawnWeights.Length];
         int currThreshold = 0;
 
@@ -45,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    public void SpawnEnemy()
+    void SpawnEnemy()
     {
         int rand = Random.Range(0, thresholdsTotal + 1);
         
@@ -57,5 +57,21 @@ public class EnemySpawner : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void ChangeSpawnInterval(float newInterval)
+    {
+        spawnInterval = newInterval;
+    }
+
+    public void ChangeMaxSpawnedEnemies(int newMax)
+    {
+        maxSpawnedEnemies = newMax;
+    }
+
+    public void ChangeSpawnWeights(SpawnWeightCollection newWeights)
+    {
+        spawnWeightCollection = newWeights;
+        SetUpRateThresholds();
     }
 }
