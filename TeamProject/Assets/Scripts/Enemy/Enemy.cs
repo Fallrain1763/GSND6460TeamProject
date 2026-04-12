@@ -393,16 +393,16 @@ public class Enemy : MonoBehaviour
 
     virtual protected void ChaseTarget()
     {
-        agent.isStopped = true;
-        target = playerObject.transform;
-        agent.isStopped = false;
+        ChangeTarget(playerObject.transform);
         MoveToTarget();
         ScanForTarget();
     }
 
     public void ChangeTarget(Transform newTarget)
     {
+        agent.isStopped = true;
         target = newTarget;
+        agent.isStopped = false;
     }
 
     public void MoveToTarget()
