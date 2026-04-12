@@ -10,6 +10,9 @@ public class RangedEnemy : Enemy
     public Transform launchPoint;
     public float animationDelay = 1.5f;
     public float attackInterval = 5f;
+    
+    [Header("Audio")]
+    public AudioClip throwingSound;
 
     bool isAttacking = false;
 
@@ -17,6 +20,7 @@ public class RangedEnemy : Enemy
     {
         if (!isAttacking)
         {
+            GetComponent<AudioSource>().PlayOneShot(throwingSound);
             animator.SetBool("walk", false);
             transform.LookAt(target);
             isAttacking = true;
@@ -27,7 +31,9 @@ public class RangedEnemy : Enemy
 
     override protected void ChaseTarget()
     {
-        if (Vector3.Distance(target.position, transform.position) <= attackRange)
+        float distance = Vector3.Distance(target.position, transform.position);
+
+        if (distance < attackRange)
         {
             agent.isStopped = true;
             currentState = EnemyState.Attack;
@@ -43,7 +49,7 @@ public class RangedEnemy : Enemy
         yield return new WaitForSecondsRealtime(animationDelay);
         Instantiate(projectile, launchPoint.position, launchPoint.rotation);
         yield return new WaitForSecondsRealtime(attackInterval);
-        isAttacking = false;
         currentState = EnemyState.Chase;
+        isAttacking = false;
     }
 }

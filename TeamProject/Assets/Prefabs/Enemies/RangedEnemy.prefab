@@ -162,13 +162,15 @@ MonoBehaviour:
   enemyTypeName: 
   target: {fileID: 0}
   animator: {fileID: 1107898741209198555}
+  wanderRange: 20
   aggroRadius: 30
   attackRange: 20
   rangedDamage: 10
   projectile: {fileID: 7912078949022690543, guid: 962f48191c893f0488ac59de566be72c, type: 3}
   launchPoint: {fileID: 5854803884791804635}
-  animationDelay: 1.5
+  animationDelay: 2
   attackInterval: 5
+  throwingSound: {fileID: 8300000, guid: 0f995da1fd677b541add63ef14c9e94c, type: 3}
 --- !u!195 &3983274670085174449
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,9 +22,12 @@ public class Enemy : MonoBehaviour
     [Header("Movement")]
     public Transform target; // Not ideal since this requires manual assignment -- might want to have globally accessible reference instead -RH
     public Animator animator;
+    public float wanderRange = 20;
+    bool lookForNewTarget = true;
 
     [Header("Targeting")]
     public float aggroRadius = 10f;
+    public GameObject playerObject;
 
     float currentHealth;
     protected NavMeshAgent agent;
@@ -58,6 +62,7 @@ public class Enemy : MonoBehaviour
             baseMoveSpeed = agent.speed;
 
         if (target == null) target = GameObject.Find("Player").transform; // I don't like using Find since it's slow but not sure what the best approach is here -RH
+        if (playerObject == null) playerObject = GameObject.Find("Player");
     }
 
     void Update()
@@ -85,7 +90,7 @@ public class Enemy : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Idle:
-                animator.SetBool("walk", false);
+                RandomWalk();
                 ScanForTarget();
                 break;
             case EnemyState.Chase:
@@ -351,10 +356,12 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         if (currentState == EnemyState.Die) return;
-        animator.SetTrigger("hit");
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();
         if (ph != null)
+        {
+            animator.SetTrigger("hit");
             ph.TakeDamage(damageToPlayer);
+        }
     }
 
     void ScanForTarget()
@@ -369,9 +376,27 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    // Source: https://discussions.unity.com/t/solved-random-wander-ai-using-navmesh/581895/3
+    void RandomWalk()
+    {
+        if (currentState != EnemyState.Idle) return;
+        if (!lookForNewTarget) return;
+        lookForNewTarget = false;
+        animator.SetBool("walk", true);
+        Vector3 randDirection = Random.insideUnitSphere * wanderRange;
+        randDirection += transform.position;
+        NavMeshHit navHit;
+        NavMesh.SamplePosition(randDirection, out navHit, wanderRange, NavMesh.AllAreas);
+        agent.SetDestination(navHit.position);
+        StartCoroutine(WaitBeforeNewWanderTarget());
+    }
+
     virtual protected void ChaseTarget()
     {
-        agent.SetDestination(target.position);
+        agent.isStopped = true;
+        target = playerObject.transform;
+        agent.isStopped = false;
+        MoveToTarget();
         ScanForTarget();
     }
 
@@ -389,5 +414,12 @@ public class Enemy : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, aggroRadius);
+    }
+
+    IEnumerator WaitBeforeNewWanderTarget()
+    {
+        float randomDuration = Random.Range(1,10);
+        yield return new WaitForSecondsRealtime(randomDuration);
+        lookForNewTarget = true;
     }
 }
