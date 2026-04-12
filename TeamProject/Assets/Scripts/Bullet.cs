@@ -46,7 +46,7 @@ public class Bullet : MonoBehaviour
         Enemy enemy = col.gameObject.GetComponent<Enemy>();
         if (enemy != null)
         {
-            if (impactParticles != null) Instantiate(impactParticles, col.gameObject.transform.position, Quaternion.identity);
+            if (impactParticles != null) Instantiate(impactParticles, col.gameObject.transform);
             enemy.TakeDamage(damage);
             Destroy(gameObject); // Bullet disappears on enemy hit
             return;

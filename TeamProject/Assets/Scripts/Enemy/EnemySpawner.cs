@@ -3,11 +3,21 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Set Up")]
-    public GameObject enemyPrefab;
-    public GameObject rangedEnemyPrefab;
+    public SpawnWeightCollection spawnWeightCollection;
     public float spawnInterval;
+    public int maxSpawnedEnemies; // Track with # children
+    
+    SpawnableToWeight[] spawnWeights;
+    int[] rateThresholds;
+    int thresholdsTotal = 0;
 
     float currentTime = 0;
+
+    void Start()
+    {
+        spawnWeights = spawnWeightCollection.spawnWeights;
+        SetUpRateThresholds(); 
+    }
 
     void Update()
     {
@@ -15,14 +25,37 @@ public class EnemySpawner : MonoBehaviour
         currentTime += Time.deltaTime;
         if (currentTime > spawnInterval)
         {
-            int rand = Random.Range(0,2);
-            if (rand == 0)
-                Instantiate(enemyPrefab);
-            else 
-                //Instantiate(rangedEnemyPrefab);
+            if (transform.childCount < maxSpawnedEnemies) SpawnEnemy();
             currentTime = 0;
         }
 
         // Can escalate difficulty by varying spawn interval over time -RH
+    }
+
+    void SetUpRateThresholds()
+    {
+        rateThresholds = new int[spawnWeights.Length];
+        int currThreshold = 0;
+
+        for (int i = 0; i < spawnWeights.Length; i++)
+        {
+            thresholdsTotal += spawnWeights[i].weight;
+            currThreshold += spawnWeights[i].weight;
+            rateThresholds[i] = currThreshold;
+        }
+    }
+
+    public void SpawnEnemy()
+    {
+        int rand = Random.Range(0, thresholdsTotal + 1);
+        
+        for (int i = 0; i < rateThresholds.Length; i++)
+        {
+            if (rand < rateThresholds[i])
+            {
+                Instantiate(spawnWeights[i].spawnable, transform);
+                return;
+            }
+        }
     }
 }

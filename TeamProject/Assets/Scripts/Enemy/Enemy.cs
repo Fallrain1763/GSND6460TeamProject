@@ -350,6 +350,7 @@ public class Enemy : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        if (currentState == EnemyState.Die) return;
         animator.SetTrigger("hit");
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();
         if (ph != null)
