@@ -5,19 +5,23 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
 
-    // Runtime state for one active quest
     public class ActiveQuest
     {
         public QuestData data;
         public QuestNPC sourceNPC;
+        public string npcName;
+
+        // Timeout (countdown before reaching start location)
+        public float timeoutTimer;
+        public bool  timeoutActive = true;
 
         // Kill progress
-        public int killProgress;
-        public bool startLocationReached;  // Must reach start location before progress counts
+        public int  killProgress;
+        public bool startLocationReached;
 
         // Defend progress
         public float defendTimer;
-        public bool defendStarted;
+        public bool  defendStarted;
 
         // Escort progress
         public bool escortComplete;
@@ -33,7 +37,6 @@ public class QuestManager : MonoBehaviour
             };
         }
 
-        // Progress string shown next to task in UI
         public string GetProgressString()
         {
             return data.questType switch
@@ -69,10 +72,11 @@ public class QuestManager : MonoBehaviour
 
     void Update()
     {
-        // Tick defend timers
         for (int i = activeQuests.Count - 1; i >= 0; i--)
         {
             var q = activeQuests[i];
+
+            // Tick defend timer
             if (q.data.questType == QuestType.Defend && q.defendStarted && q.defendTimer > 0f)
             {
                 q.defendTimer -= Time.deltaTime;
@@ -80,42 +84,88 @@ public class QuestManager : MonoBehaviour
                 {
                     q.defendTimer = 0f;
                     CompleteQuest(q);
+                    continue;
+                }
+            }
+
+            // Tick timeout countdown (only before start location is reached)
+            if (q.timeoutActive && !q.startLocationReached)
+            {
+                q.timeoutTimer -= Time.deltaTime;
+                if (q.timeoutTimer <= 0f)
+                {
+                    q.timeoutTimer = 0f;
+                    activeQuests.RemoveAt(i);
+                    QuestUI.Instance?.RefreshQuestList();
+                    q.sourceNPC?.OnQuestTimeout();
+                    continue;
                 }
             }
         }
     }
 
-    // Called by QuestNPC when player accepts quest
     public ActiveQuest AcceptQuest(QuestData data, QuestNPC npc)
     {
         var q = new ActiveQuest
         {
-            data        = data,
-            sourceNPC   = npc,
-            defendTimer = data.defendDuration
+            data          = data,
+            sourceNPC     = npc,
+            npcName       = npc.npcName,
+            defendTimer   = data.defendDuration,
+            timeoutTimer  = npc.questTimeout,
+            timeoutActive = true
         };
         activeQuests.Add(q);
         return q;
     }
 
-    // Returns true if player already has an active quest from this NPC
-    public bool HasQuestFromNPC(QuestNPC npc)
+    public bool HasQuestFromNPC(QuestNPC npc) =>
+        activeQuests.Exists(q => q.sourceNPC == npc);
+
+    // Called by LocationTrigger with the location's name
+    public void ReportLocationReached(string locationName)
     {
-        return activeQuests.Exists(q => q.sourceNPC == npc);
+        bool changed = false;
+
+        for (int i = activeQuests.Count - 1; i >= 0; i--)
+        {
+            var q = activeQuests[i];
+
+            // Activate start location
+            if (!q.startLocationReached && q.data.startLocationName == locationName)
+            {
+                q.startLocationReached = true;
+                q.timeoutActive        = false;  // Stop countdown
+                changed = true;
+
+                if (q.data.questType == QuestType.Defend)
+                    q.defendStarted = true;
+            }
+
+            // Complete escort when target location is reached
+            if (q.data.questType   == QuestType.Escort &&
+                q.startLocationReached &&
+                !q.escortComplete &&
+                q.data.targetLocationName == locationName)
+            {
+                q.escortComplete = true;
+                CompleteQuest(q);
+                return;
+            }
+        }
+
+        if (changed) QuestUI.Instance?.RefreshQuestList();
     }
 
-    // --- Called externally to report progress ---
-
-    // Call this from Enemy.Die() passing enemy type name
     public void ReportEnemyKilled(string enemyType)
     {
         bool changed = false;
         foreach (var q in activeQuests)
         {
-            if (q.data.questType == QuestType.Kill &&
+            if (q.data.questType     == QuestType.Kill &&
                 q.startLocationReached &&
-                q.data.enemyTypeName == enemyType &&
-                q.killProgress < q.data.killCount)
+                q.data.enemyTypeName  == enemyType &&
+                q.killProgress        < q.data.killCount)
             {
                 q.killProgress++;
                 changed = true;
@@ -125,48 +175,20 @@ public class QuestManager : MonoBehaviour
         if (changed) QuestUI.Instance?.RefreshQuestList();
     }
 
-    // Call this when player enters Start Location trigger
-    public void ReportStartLocationReached(QuestData data)
+    // Called when NPC times out — removes quest silently
+    public void CancelQuest(QuestData data)
     {
         var q = activeQuests.Find(x => x.data == data);
         if (q == null) return;
-
-        if (q.data.questType == QuestType.Defend && !q.defendStarted)
-        {
-            q.defendStarted = true;
-            q.startLocationReached = true;
-            QuestUI.Instance?.RefreshQuestList();
-        }
-        else if (q.data.questType == QuestType.Kill && !q.startLocationReached)
-        {
-            q.startLocationReached = true;
-            QuestUI.Instance?.RefreshQuestList();
-        }
-        else if (q.data.questType == QuestType.Escort && !q.startLocationReached)
-        {
-            q.startLocationReached = true;
-            QuestUI.Instance?.RefreshQuestList();
-        }
-    }
-
-    // Call this when player enters Target Location trigger (Escort)
-    public void ReportTargetLocationReached(QuestData data)
-    {
-        var q = activeQuests.Find(x => x.data == data);
-        if (q == null) return;
-
-        if (q.data.questType == QuestType.Escort && q.startLocationReached)
-        {
-            q.escortComplete = true;
-            CompleteQuest(q);
-        }
+        activeQuests.Remove(q);
+        QuestUI.Instance?.RefreshQuestList();
     }
 
     void CompleteQuest(ActiveQuest q)
     {
         Debug.Log($"Quest complete: {q.data.questName}");
         QuestUI.Instance?.ShowPopup($"Quest complete: {q.data.questName}");
-        q.sourceNPC.OnQuestCompleted();
+        q.sourceNPC?.OnQuestCompleted();
         activeQuests.Remove(q);
         QuestUI.Instance?.RefreshQuestList();
     }

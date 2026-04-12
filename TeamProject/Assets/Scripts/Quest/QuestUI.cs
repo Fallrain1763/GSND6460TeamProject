@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class QuestUI : MonoBehaviour
@@ -28,9 +27,7 @@ public class QuestUI : MonoBehaviour
 
         if (popupText != null)
         {
-            var c = popupText.color;
-            c.a = 0f;
-            popupText.color = c;
+            var c = popupText.color; c.a = 0f; popupText.color = c;
         }
     }
 
@@ -47,7 +44,7 @@ public class QuestUI : MonoBehaviour
         RefreshQuestList();
     }
 
-    // Show popup only (used for "Mission in progress" etc.)
+    // Show popup only (used for "Mission in progress", quest complete, etc.)
     public void ShowPopup(string message)
     {
         if (popupText == null) return;
@@ -58,9 +55,7 @@ public class QuestUI : MonoBehaviour
     IEnumerator PopupRoutine(string message)
     {
         popupText.text = message;
-        var c = popupText.color;
-        c.a = 1f;
-        popupText.color = c;
+        var c = popupText.color; c.a = 1f; popupText.color = c;
 
         yield return new WaitForSeconds(popupHoldTime);
 
@@ -72,12 +67,10 @@ public class QuestUI : MonoBehaviour
             popupText.color = c;
             yield return null;
         }
-
-        c.a = 0f;
-        popupText.color = c;
+        c.a = 0f; popupText.color = c;
     }
 
-    // Rebuild quest list from scratch
+    // Rebuild quest list rows from scratch
     public void RefreshQuestList()
     {
         foreach (var r in rows) Destroy(r);
@@ -112,12 +105,30 @@ public class QuestUI : MonoBehaviour
 
     string BuildRowText(QuestManager.ActiveQuest q)
     {
-        return q.data.questType switch
+        // Left: countdown (shown only before start location reached)
+        string countdown = (!q.startLocationReached && q.timeoutActive)
+            ? $"[{FormatTime(q.timeoutTimer)}] "
+            : "";
+
+        // Middle: description + progress
+        string middle = q.data.questType switch
         {
-            QuestType.Escort => $"Escort me to {q.data.targetLocationName} — {q.GetProgressString()}",
-            QuestType.Kill   => $"Kill {q.data.killCount} {q.data.enemyTypeName} — {q.GetProgressString()}",
-            QuestType.Defend => $"Defend me for {q.data.defendDuration}s — {q.GetProgressString()}",
+            QuestType.Escort => $"Escort {q.npcName} to {q.data.targetLocationName} — {q.GetProgressString()}",
+            QuestType.Kill   => $"Kill {q.data.killCount} {q.data.enemyTypeName} for {q.npcName} — {q.GetProgressString()}",
+            QuestType.Defend => $"Defend {q.npcName} for {q.data.defendDuration}s — {q.GetProgressString()}",
             _                => q.data.GetDescription()
         };
+
+        // Right: reward
+        string reward = $"    Reward: {q.data.reward}";
+
+        return $"{countdown}{middle}{reward}";
+    }
+
+    static string FormatTime(float t)
+    {
+        int m = Mathf.FloorToInt(t / 60f);
+        int s = Mathf.FloorToInt(t % 60f);
+        return $"{m:00}:{s:00}";
     }
 }

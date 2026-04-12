@@ -2,16 +2,12 @@ using UnityEngine;
 
 public class LocationTrigger : MonoBehaviour
 {
-    public QuestData questData;
-    public bool isTargetLocation = false;
+    [Tooltip("Must exactly match the location name used in quest generation (e.g. 'Location1')")]
+    public string locationName;
 
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-
-        if (isTargetLocation)
-            QuestManager.Instance.ReportTargetLocationReached(questData);
-        else
-            QuestManager.Instance.ReportStartLocationReached(questData);
+        QuestManager.Instance.ReportLocationReached(locationName);
     }
 }
