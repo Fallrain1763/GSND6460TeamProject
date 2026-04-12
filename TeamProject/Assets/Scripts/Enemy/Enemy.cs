@@ -116,6 +116,7 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth <= 0f)
         {
+            currentState = EnemyState.Die;
             Die();
         }
         else
