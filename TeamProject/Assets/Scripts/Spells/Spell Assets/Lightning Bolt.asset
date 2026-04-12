@@ -16,10 +16,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 01dc6d9419ed1d94e87746b4b5edbba1, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 1
-  length: 10
-  radius: 0.75
+  length: 15
+  radius: 0.5
   targetLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 30
-  stunDuration: 0.25
+  damage: 15
+  stunDuration: 0.2

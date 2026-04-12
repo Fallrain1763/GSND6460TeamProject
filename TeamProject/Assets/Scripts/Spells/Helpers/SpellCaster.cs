@@ -39,8 +39,11 @@ public class SpellCaster : MonoBehaviour
 
     void TryCastSpell(SpellBase spell)
     {
-        if (spell == null || mainCam == null) return;
-        if (!CanCast(spell)) return;
+        if (spell == null || mainCam == null)
+            return;
+
+        if (!CanCast(spell))
+            return;
 
         SpellContext context = BuildSpellContext();
         spell.Cast(context, this);
@@ -49,7 +52,8 @@ public class SpellCaster : MonoBehaviour
 
     bool CanCast(SpellBase spell)
     {
-        if (spell == null) return false;
+        if (spell == null)
+            return false;
 
         if (!lastCastTimes.TryGetValue(spell, out float lastCastTime))
             return true;
@@ -99,5 +103,34 @@ public class SpellCaster : MonoBehaviour
     public void SetChanneling(bool value)
     {
         isChanneling = value;
+    }
+
+    public float GetCooldownRemaining(SpellBase spell)
+    {
+        if (spell == null)
+            return 0f;
+
+        if (spell.cooldown <= 0f)
+            return 0f;
+
+        if (!lastCastTimes.TryGetValue(spell, out float lastCastTime))
+            return 0f;
+
+        float endTime = lastCastTime + spell.cooldown;
+        return Mathf.Max(0f, endTime - Time.time);
+    }
+
+    public float GetCooldownNormalized(SpellBase spell)
+    {
+        if (spell == null || spell.cooldown <= 0f)
+            return 0f;
+
+        float remaining = GetCooldownRemaining(spell);
+        return remaining / spell.cooldown;
+    }
+
+    public bool IsOnCooldown(SpellBase spell)
+    {
+        return GetCooldownRemaining(spell) > 0f;
     }
 }

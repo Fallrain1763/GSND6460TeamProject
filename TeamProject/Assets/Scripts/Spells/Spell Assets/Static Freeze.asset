@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Static Freeze
   icon: {fileID: 21300000, guid: 84c3eeb17bcf21b44aa3bed3cdf95bbc, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
-  cooldown: 3
+  cooldown: 5
   radius: 4
   maxRange: 15
   targetLayers:
@@ -23,4 +23,4 @@ MonoBehaviour:
     m_Bits: 4294967295
   damage: 25
   slowPercent: 0.4
-  slowDuration: 2.5
+  slowDuration: 5

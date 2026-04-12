@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ public class SpellInventoryUI : MonoBehaviour
 
     [Header("Inventory")]
     [SerializeField] int inventorySize = 27;
-    [SerializeField] int hotbarSize = 5;
+    [SerializeField] int hotbarSize = 3;
     [SerializeField] List<SpellBase> startingSpells;
 
     [Header("Spell Combos")]
@@ -28,6 +29,8 @@ public class SpellInventoryUI : MonoBehaviour
 
     [Header("Casting Integration")]
     [SerializeField] SpellCaster spellCaster;
+
+    public event Action OnHotbarChanged;
 
     SpellBase[] inventory;
     SpellBase[] hotbar;
@@ -43,6 +46,7 @@ public class SpellInventoryUI : MonoBehaviour
     List<SlotRecord> allSlots = new List<SlotRecord>();
 
     bool isOpen = false;
+    int selectedHotbarIndex = 0;
 
     struct SlotRecord
     {
@@ -65,11 +69,16 @@ public class SpellInventoryUI : MonoBehaviour
         if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
+        selectedHotbarIndex = Mathf.Clamp(selectedHotbarIndex, 0, hotbar.Length - 1);
+
         RefreshSelectedSpell();
+        NotifyHotbarChanged();
     }
 
     void Update()
     {
+        HandleHotbarSelectionInput();
+
         if (Input.GetKeyDown(KeyCode.Tab))
             ToggleInventory();
 
@@ -78,6 +87,21 @@ public class SpellInventoryUI : MonoBehaviour
 
         if (isDragging && Input.GetMouseButtonUp(0))
             FinishDrag();
+    }
+
+    void HandleHotbarSelectionInput()
+    {
+        if (hotbar == null || hotbar.Length == 0)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SelectHotbarSlot(0);
+
+        if (Input.GetKeyDown(KeyCode.Alpha2) && hotbar.Length > 1)
+            SelectHotbarSlot(1);
+
+        if (Input.GetKeyDown(KeyCode.Alpha3) && hotbar.Length > 2)
+            SelectHotbarSlot(2);
     }
 
     void ToggleInventory()
@@ -102,6 +126,7 @@ public class SpellInventoryUI : MonoBehaviour
         BuildGrid(hotbarGrid, hotbar, hotbarSize, SlotSource.Hotbar);
         RefreshForge();
         RefreshSelectedSpell();
+        NotifyHotbarChanged();
     }
 
     void BuildGrid(Transform parent, SpellBase[] data, int size, SlotSource source)
@@ -116,6 +141,12 @@ public class SpellInventoryUI : MonoBehaviour
 
             SpellSlot slot = go.GetComponent<SpellSlot>();
             slot.Setup(data[idx], source, idx, this);
+
+            // Optional: visually highlight selected slot in the inventory hotbar row
+            if (source == SlotSource.Hotbar && idx == selectedHotbarIndex && slot.bgImage != null)
+            {
+                slot.bgImage.color = new Color(0.85f, 0.72f, 0.28f, 0.95f);
+            }
 
             allSlots.Add(new SlotRecord
             {
@@ -404,16 +435,63 @@ public class SpellInventoryUI : MonoBehaviour
 
     void RefreshSelectedSpell()
     {
+        if (hotbar == null || hotbar.Length == 0)
+        {
+            if (spellCaster != null)
+                spellCaster.selectedSpell = null;
+            return;
+        }
+
+        selectedHotbarIndex = Mathf.Clamp(selectedHotbarIndex, 0, hotbar.Length - 1);
+
         if (spellCaster != null)
-            spellCaster.selectedSpell = hotbar.Length > 0 ? hotbar[0] : null;
+            spellCaster.selectedSpell = hotbar[selectedHotbarIndex];
+    }
+
+    void NotifyHotbarChanged()
+    {
+        OnHotbarChanged?.Invoke();
+    }
+
+    public void SelectHotbarSlot(int index)
+    {
+        if (hotbar == null || hotbar.Length == 0)
+            return;
+
+        index = Mathf.Clamp(index, 0, hotbar.Length - 1);
+
+        if (selectedHotbarIndex == index)
+            return;
+
+        selectedHotbarIndex = index;
+        RefreshSelectedSpell();
+        NotifyHotbarChanged();
+
+        if (isOpen)
+            Refresh();
+    }
+
+    public int GetSelectedHotbarIndex()
+    {
+        return selectedHotbarIndex;
+    }
+
+    public int GetHotbarSize()
+    {
+        return hotbar != null ? hotbar.Length : 0;
     }
 
     public SpellBase GetHotbarSpell(int index)
     {
-        if (index < 0 || index >= hotbar.Length)
+        if (hotbar == null || index < 0 || index >= hotbar.Length)
             return null;
 
         return hotbar[index];
+    }
+
+    public bool IsInventoryOpen()
+    {
+        return isOpen;
     }
 
     public bool TryAddSpell(SpellBase spell)
@@ -427,7 +505,10 @@ public class SpellInventoryUI : MonoBehaviour
                 if (isOpen)
                     Refresh();
                 else
+                {
                     RefreshSelectedSpell();
+                    NotifyHotbarChanged();
+                }
 
                 return true;
             }

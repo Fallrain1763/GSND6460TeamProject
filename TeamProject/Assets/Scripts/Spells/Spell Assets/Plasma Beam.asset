@@ -15,14 +15,14 @@ MonoBehaviour:
   spellName: Plasma Beam
   icon: {fileID: 21300000, guid: 84c3eeb17bcf21b44aa3bed3cdf95bbc, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
-  cooldown: 5
-  duration: 2.5
+  cooldown: 15
+  duration: 3
   tickInterval: 0.15
-  length: 14
+  length: 20
   radius: 0.4
   targetLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   damagePerTick: 10
-  movementMultiplier: 0.35
+  movementMultiplier: 0.25
   lookSensitivityMultiplier: 0.4

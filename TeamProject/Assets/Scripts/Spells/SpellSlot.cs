@@ -11,8 +11,11 @@ public class SpellSlot : MonoBehaviour, IPointerDownHandler
     int index;
     SpellInventoryUI manager;
 
+    [Header("UI References")]
     [SerializeField] public Image iconImage;
     [SerializeField] public Image bgImage;
+    [SerializeField] public Image highlightImage;
+    [SerializeField] public Image cooldownOverlayImage;
     [SerializeField] public TMP_Text label;
 
     static readonly Color EmptyBg = new Color(0.16f, 0.12f, 0.24f, 0.85f);
@@ -48,6 +51,12 @@ public class SpellSlot : MonoBehaviour, IPointerDownHandler
             else
                 label.text = hasSome ? spell.spellName : "";
         }
+
+        if (cooldownOverlayImage != null)
+        {
+            cooldownOverlayImage.enabled = false;
+            cooldownOverlayImage.fillAmount = 0f;
+        }
     }
 
     public void SetupForge(SpellBase data, SlotSource src, int idx, SpellInventoryUI mgr, Image slotImage)
@@ -73,6 +82,41 @@ public class SpellSlot : MonoBehaviour, IPointerDownHandler
         }
     }
 
+    public void SetHighlight(bool isSelected, Color selectedColor, Color normalColor, Color emptyColor)
+    {
+        bool hasSpell = spell != null;
+
+        if (highlightImage != null)
+        {
+            highlightImage.enabled = isSelected;
+            highlightImage.color = selectedColor;
+        }
+        else if (bgImage != null)
+        {
+            if (isSelected)
+                bgImage.color = selectedColor;
+            else
+                bgImage.color = hasSpell ? normalColor : emptyColor;
+        }
+    }
+
+    public void SetCooldownOverlay(float normalizedRemaining)
+    {
+        if (cooldownOverlayImage == null)
+            return;
+
+        if (normalizedRemaining > 0f)
+        {
+            cooldownOverlayImage.enabled = true;
+            cooldownOverlayImage.fillAmount = Mathf.Clamp01(normalizedRemaining);
+        }
+        else
+        {
+            cooldownOverlayImage.enabled = false;
+            cooldownOverlayImage.fillAmount = 0f;
+        }
+    }
+
     public void OnPointerDown(PointerEventData e)
     {
         if (spell == null)
@@ -87,6 +131,7 @@ public class SpellSlot : MonoBehaviour, IPointerDownHandler
         manager.BeginDrag(spell, source, index);
     }
 
+    public SpellBase GetSpell() => spell;
     public SlotSource GetSource() => source;
     public int GetIndex() => index;
 }

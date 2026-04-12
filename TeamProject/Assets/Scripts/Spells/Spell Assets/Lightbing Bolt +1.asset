@@ -15,11 +15,11 @@ MonoBehaviour:
   spellName: Lightning Bolt +1
   icon: {fileID: 21300000, guid: 01dc6d9419ed1d94e87746b4b5edbba1, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
-  cooldown: 1
-  length: 15
-  radius: 0.75
+  cooldown: 2
+  length: 20
+  radius: 0.5
   targetLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 55
+  damage: 25
   stunDuration: 0.5

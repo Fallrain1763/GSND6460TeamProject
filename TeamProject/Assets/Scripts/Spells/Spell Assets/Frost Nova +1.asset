@@ -15,11 +15,11 @@ MonoBehaviour:
   spellName: Frost Nova +1
   icon: {fileID: 21300000, guid: d44473c415ed4da428f0d863894d7378, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
-  cooldown: 2
+  cooldown: 5
   radius: 7
   targetLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   damage: 30
-  slowPercent: 0.6
-  slowDuration: 3
+  slowPercent: 0.65
+  slowDuration: 6
