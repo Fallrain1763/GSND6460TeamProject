@@ -33,6 +33,9 @@ public class Enemy : MonoBehaviour
     protected NavMeshAgent agent;
     protected EnemyState currentState = EnemyState.Idle;
 
+    // NPC target (set by QuestManager when Escort/Defend start location is reached)
+    Transform npcTarget;
+
     // Slow variables
     float baseMoveSpeed;
     float slowTimer = 0f;
@@ -48,7 +51,6 @@ public class Enemy : MonoBehaviour
     float stunTimer = 0f;
     bool wasAgentStoppedBeforeStun = false;
 
-    
     // Knockup variables
     float knockupTimer = 0f;
     bool knockupActive = false;
@@ -121,9 +123,8 @@ public class Enemy : MonoBehaviour
             if (triggerReaction)
             {
                 GetComponent<AudioSource>().Play();
-                animator.SetTrigger("hurt"); 
+                animator.SetTrigger("hurt");
             }
-
         }
     }
 
@@ -221,6 +222,7 @@ public class Enemy : MonoBehaviour
             dotDamagePerTick = 0f;
         }
     }
+
     public void ApplyStun(float duration)
     {
         duration = Mathf.Max(0f, duration);
@@ -340,6 +342,20 @@ public class Enemy : MonoBehaviour
         rb.AddForce(awayDirection * force, ForceMode.VelocityChange);
     }
 
+    // Called by QuestManager when an Escort/Defend start location is reached
+    public void SetNPCTarget(Transform npc)
+    {
+        npcTarget = npc;
+        currentState = EnemyState.Chase;
+    }
+
+    // Called by QuestManager when the quest ends (success, fail, or cancel)
+    public void ClearNPCTarget()
+    {
+        npcTarget = null;
+        currentState = EnemyState.Idle;
+    }
+
     virtual protected void Attack()
     {
         Debug.Log("attack!");
@@ -356,16 +372,30 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         if (currentState == EnemyState.Die) return;
+
+        // Damage player on contact (always active)
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();
         if (ph != null)
         {
             animator.SetTrigger("hit");
             ph.TakeDamage(damageToPlayer);
         }
+
+        // Damage NPC on contact (when targeting NPC)
+        QuestNPC npc = col.gameObject.GetComponent<QuestNPC>();
+        if (npc != null)
+            npc.TakeDamage(damageToPlayer);
     }
 
     void ScanForTarget()
     {
+        // If locked onto an NPC, don't scan for new targets
+        if (npcTarget != null)
+        {
+            currentState = EnemyState.Chase;
+            return;
+        }
+
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, aggroRadius);
         foreach (Collider hitCollider in hitColliders)
         {
@@ -393,6 +423,14 @@ public class Enemy : MonoBehaviour
 
     virtual protected void ChaseTarget()
     {
+        // If an NPC target is set, lock onto it exclusively
+        if (npcTarget != null)
+        {
+            ChangeTarget(npcTarget);
+            MoveToTarget();
+            return;
+        }
+
         ChangeTarget(playerObject.transform);
         MoveToTarget();
         ScanForTarget();
@@ -418,7 +456,7 @@ public class Enemy : MonoBehaviour
 
     IEnumerator WaitBeforeNewWanderTarget()
     {
-        float randomDuration = Random.Range(1,10);
+        float randomDuration = Random.Range(1, 10);
         yield return new WaitForSecondsRealtime(randomDuration);
         lookForNewTarget = true;
     }

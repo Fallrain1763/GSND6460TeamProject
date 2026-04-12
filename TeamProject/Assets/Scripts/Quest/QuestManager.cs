@@ -11,7 +11,7 @@ public class QuestManager : MonoBehaviour
         public QuestNPC sourceNPC;
         public string npcName;
 
-        // Timeout (countdown before reaching start location)
+        // Timeout countdown before reaching start location
         public float timeoutTimer;
         public bool  timeoutActive = true;
 
@@ -88,7 +88,7 @@ public class QuestManager : MonoBehaviour
                 }
             }
 
-            // Tick timeout countdown (only before start location is reached)
+            // Tick timeout countdown (only before start location reached)
             if (q.timeoutActive && !q.startLocationReached)
             {
                 q.timeoutTimer -= Time.deltaTime;
@@ -135,15 +135,19 @@ public class QuestManager : MonoBehaviour
             if (!q.startLocationReached && q.data.startLocationName == locationName)
             {
                 q.startLocationReached = true;
-                q.timeoutActive        = false;  // Stop countdown
+                q.timeoutActive        = false;
                 changed = true;
 
                 if (q.data.questType == QuestType.Defend)
                     q.defendStarted = true;
+
+                // Switch all enemies to target the NPC for Escort and Defend
+                if (q.data.questType == QuestType.Escort || q.data.questType == QuestType.Defend)
+                    SwitchEnemiesToNPC(q.sourceNPC);
             }
 
             // Complete escort when target location is reached
-            if (q.data.questType   == QuestType.Escort &&
+            if (q.data.questType      == QuestType.Escort &&
                 q.startLocationReached &&
                 !q.escortComplete &&
                 q.data.targetLocationName == locationName)
@@ -162,10 +166,10 @@ public class QuestManager : MonoBehaviour
         bool changed = false;
         foreach (var q in activeQuests)
         {
-            if (q.data.questType     == QuestType.Kill &&
+            if (q.data.questType      == QuestType.Kill &&
                 q.startLocationReached &&
                 q.data.enemyTypeName  == enemyType &&
-                q.killProgress        < q.data.killCount)
+                q.killProgress        <  q.data.killCount)
             {
                 q.killProgress++;
                 changed = true;
@@ -175,21 +179,62 @@ public class QuestManager : MonoBehaviour
         if (changed) QuestUI.Instance?.RefreshQuestList();
     }
 
-    // Called when NPC times out — removes quest silently
+    // Called by QuestNPC when its health reaches zero
+    public void ReportNPCDeath(QuestData data)
+    {
+        var q = activeQuests.Find(x => x.data == data);
+        if (q == null) return;
+
+        activeQuests.Remove(q);
+        ClearEnemyNPCTargets();
+        OnMissionFail(q);
+        QuestUI.Instance?.ShowPopup("Mission Failed");
+        QuestUI.Instance?.RefreshQuestList();
+    }
+
+    // Called when NPC times out before player reaches start location
     public void CancelQuest(QuestData data)
     {
         var q = activeQuests.Find(x => x.data == data);
         if (q == null) return;
         activeQuests.Remove(q);
+        ClearEnemyNPCTargets();
         QuestUI.Instance?.RefreshQuestList();
     }
 
     void CompleteQuest(ActiveQuest q)
     {
-        Debug.Log($"Quest complete: {q.data.questName}");
+        OnMissionSuccess(q);
+        ClearEnemyNPCTargets();
         QuestUI.Instance?.ShowPopup($"Quest complete: {q.data.questName}");
         q.sourceNPC?.OnQuestCompleted();
         activeQuests.Remove(q);
         QuestUI.Instance?.RefreshQuestList();
+    }
+
+    // --- Mission outcome callbacks ---
+
+    void OnMissionFail(ActiveQuest q)
+    {
+        Debug.Log($"Mission failed: {q.data.questName}");
+    }
+
+    void OnMissionSuccess(ActiveQuest q)
+    {
+        Debug.Log($"Mission success! Reward: {q.data.reward}");
+    }
+
+    // --- Enemy target management ---
+
+    void SwitchEnemiesToNPC(QuestNPC npc)
+    {
+        foreach (var e in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+            e.SetNPCTarget(npc.transform);
+    }
+
+    void ClearEnemyNPCTargets()
+    {
+        foreach (var e in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+            e.ClearNPCTarget();
     }
 }

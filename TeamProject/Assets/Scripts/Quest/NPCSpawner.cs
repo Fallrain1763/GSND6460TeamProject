@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class NPCSpawner : MonoBehaviour
 {
@@ -74,7 +75,12 @@ public class NPCSpawner : MonoBehaviour
         int chosenIndex = available[Random.Range(0, available.Count)];
         occupiedIndices.Add(chosenIndex);
 
-        GameObject obj = Instantiate(npcPrefab, spawnPositions[chosenIndex], Quaternion.identity);
+        // Sample NavMesh to get correct Y height at this position
+        Vector3 spawnPos = spawnPositions[chosenIndex];
+        if (NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            spawnPos = hit.position;
+
+        GameObject obj = Instantiate(npcPrefab, spawnPos, Quaternion.identity);
         QuestNPC npc = obj.GetComponent<QuestNPC>();
         if (npc == null) return;
 
