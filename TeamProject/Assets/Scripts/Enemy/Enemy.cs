@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public enum EnemyState
 {
@@ -23,6 +24,8 @@ public class Enemy : MonoBehaviour
     public Transform target; // Not ideal since this requires manual assignment -- might want to have globally accessible reference instead -RH
     public Animator animator;
     public float wanderRange = 20;
+    public float walkSpeed = 3.5f;
+    public float runSpeed = 7.5f;
     bool lookForNewTarget = true;
 
     [Header("Targeting")]
@@ -32,6 +35,8 @@ public class Enemy : MonoBehaviour
     float currentHealth;
     protected NavMeshAgent agent;
     protected EnemyState currentState = EnemyState.Idle;
+
+    [SerializeField] Slider healthbar;
 
     // NPC target (set by QuestManager when Escort/Defend start location is reached)
     Transform npcTarget;
@@ -128,6 +133,7 @@ public class Enemy : MonoBehaviour
 
         currentHealth -= amount;
         Debug.Log($"{gameObject.name}: {currentHealth}/{maxHealth}");
+        if (healthbar != null) healthbar.value = currentHealth/maxHealth;
 
         if (currentHealth <= 0f)
         {
@@ -428,6 +434,7 @@ public class Enemy : MonoBehaviour
     {
         if (currentState != EnemyState.Idle) return;
         if (!lookForNewTarget) return;
+        agent.speed = walkSpeed;
         lookForNewTarget = false;
         animator.SetBool("walk", true);
         Vector3 randDirection = Random.insideUnitSphere * wanderRange;
@@ -443,6 +450,7 @@ public class Enemy : MonoBehaviour
         // If an NPC target is set, lock onto it exclusively
         if (npcTarget != null)
         {
+            agent.speed = runSpeed;
             ChangeTarget(npcTarget);
             MoveToTarget();
             return;
