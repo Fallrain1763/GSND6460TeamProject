@@ -20,6 +20,8 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
+        if (ThirdPersonCamera.InputLocked) return;
+
         // Not sure if this is the best way to do intervals but it's my default -RH
         currentTime += Time.deltaTime;
         if (currentTime > spawnInterval)

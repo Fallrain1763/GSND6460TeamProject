@@ -69,6 +69,18 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        // Freeze everything while inventory is open
+        if (ThirdPersonCamera.InputLocked)
+        {
+            if (agent != null && agent.enabled) agent.isStopped = true;
+            if (animator != null) animator.SetBool("walk", false);
+            return;
+        }
+
+        // Resume agent if it was paused by inventory
+        if (agent != null && agent.enabled && stunTimer <= 0f && !knockupActive)
+            agent.isStopped = false;
+
         UpdateSlow();
         UpdateDamageOverTime();
         UpdateStun();
@@ -109,6 +121,9 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float amount, bool triggerReaction = true)
     {
+        // Don't take damage while inventory is open
+        if (ThirdPersonCamera.InputLocked) return;
+
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
         currentHealth -= amount;
@@ -373,6 +388,7 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         if (currentState == EnemyState.Die) return;
+        if (ThirdPersonCamera.InputLocked) return;
 
         // Damage player on contact (always active)
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();

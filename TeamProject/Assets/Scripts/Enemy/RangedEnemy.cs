@@ -20,6 +20,8 @@ public class RangedEnemy : Enemy
 
     override protected void Attack()
     {
+        if (ThirdPersonCamera.InputLocked) return;
+
         if (!isAttacking)
         {
             GetComponent<AudioSource>().PlayOneShot(throwingSound);

@@ -17,14 +17,21 @@ public class PlayerMovement : MonoBehaviour
     [Header("External Modifiers")]
     public float moveSpeedMultiplier = 1f;
 
+    [Header("Mountain Collision")]
+    [Tooltip("Slopes steeper than this (degrees) will block the player")]
+    [Range(20f, 80f)] public float maxClimbAngle = 35f;
+
     Rigidbody rb;
     Vector3 moveDir;
     bool jumpPressed;
 
+    // Set by OnCollisionStay, cleared each FixedUpdate
+    bool    _touchingMountain;
+    Vector3 _mountainNormal;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
         rb.constraints = RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationZ;
     }
@@ -59,14 +66,31 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         float actualMoveSpeed = moveSpeed * moveSpeedMultiplier;
+        Vector3 desiredMove = moveDir * actualMoveSpeed;
 
-        Vector3 velocity = new Vector3(
-            moveDir.x * actualMoveSpeed,
-            rb.linearVelocity.y,
-            moveDir.z * actualMoveSpeed
-        );
+        // If touching a steep mountain surface, strip out any component of movement
+        // that points toward the mountain (dot product < 0 means moving into it)
+        if (_touchingMountain)
+        {
+            Vector3 flatNormal = _mountainNormal;
+            flatNormal.y = 0f;
+            flatNormal.Normalize();
 
-        rb.linearVelocity = velocity;
+            float dot = Vector3.Dot(desiredMove.normalized, -flatNormal);
+            if (dot > 0f)
+            {
+                // Remove the toward-mountain component from movement
+                desiredMove -= flatNormal * -Vector3.Dot(desiredMove, -flatNormal);
+            }
+
+            // Also kill any upward velocity from slope riding
+            if (rb.linearVelocity.y > 0f)
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+            _touchingMountain = false;
+        }
+
+        rb.linearVelocity = new Vector3(desiredMove.x, rb.linearVelocity.y, desiredMove.z);
 
         if (jumpPressed)
         {
@@ -87,6 +111,21 @@ public class PlayerMovement : MonoBehaviour
                     rotationSpeed * Time.fixedDeltaTime
                 ));
             }
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("Mountain")) return;
+
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            float angle = Vector3.Angle(contact.normal, Vector3.up);
+            if (angle < maxClimbAngle) continue;
+
+            _touchingMountain = true;
+            _mountainNormal   = contact.normal;
+            break;
         }
     }
 

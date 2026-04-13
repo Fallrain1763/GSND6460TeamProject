@@ -18,6 +18,8 @@ public class EnemyProjectile : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        if (ThirdPersonCamera.InputLocked) return;
+
         PlayerHealth ph = col.gameObject.GetComponent<PlayerHealth>();
         if (ph != null)
         {
