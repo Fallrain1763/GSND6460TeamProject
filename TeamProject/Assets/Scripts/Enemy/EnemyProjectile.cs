@@ -24,7 +24,7 @@ public class EnemyProjectile : MonoBehaviour
         if (ph != null)
         {
             ph.TakeDamage(damageToPlayer);
-            DestroySelf();
         }
+        DestroySelf();
     }
 }
