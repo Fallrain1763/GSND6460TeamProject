@@ -105,24 +105,26 @@ public class QuestUI : MonoBehaviour
 
     string BuildRowText(QuestManager.ActiveQuest q)
     {
-        // Left: countdown (shown only before start location reached)
+        // Line 1: countdown + quest description
         string countdown = (!q.startLocationReached && q.timeoutActive)
             ? $"[{FormatTime(q.timeoutTimer)}] "
             : "";
 
-        // Middle: description + progress
-        string middle = q.data.questType switch
+        string line1 = q.data.questType switch
         {
-            QuestType.Escort => $"Escort {q.npcName} to {q.data.targetLocationName} — {q.GetProgressString()}",
-            QuestType.Kill   => $"Kill {q.data.killCount} {q.data.enemyTypeName} for {q.npcName} — {q.GetProgressString()}",
-            QuestType.Defend => $"Defend {q.npcName} for {q.data.defendDuration}s — {q.GetProgressString()}",
-            _                => q.data.GetDescription()
+            QuestType.Escort => $"{countdown}Escort {q.npcName} to {q.data.targetLocationName}",
+            QuestType.Kill   => $"{countdown}Kill {q.data.killCount} {q.data.enemyTypeName} for {q.npcName}",
+            QuestType.Defend => $"{countdown}Defend {q.npcName} for {q.data.defendDuration}s",
+            _                => q.data.GetDescription(q.npcName)
         };
 
-        // Right: reward
-        string reward = $"    Reward: {q.data.reward}";
+        // Line 2: progress
+        string line2 = q.GetProgressString();
 
-        return $"{countdown}{middle}{reward}";
+        // Line 3: reward
+        string line3 = $"Reward: {q.data.reward}";
+
+        return $"{line1}\n{line2}\n{line3}";
     }
 
     static string FormatTime(float t)

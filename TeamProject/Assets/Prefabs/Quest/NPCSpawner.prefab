@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3793625714218554833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1187881131307474557}
+  - component: {fileID: 8869608658588474106}
+  m_Layer: 0
+  m_Name: NPCSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1187881131307474557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793625714218554833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -19.98141, y: 0, z: 3.3254}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8869608658588474106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793625714218554833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2ace3933750a4265ae5d58b9b4a733b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  npcPrefab: {fileID: 3718127064360387971, guid: 361c5039d60ab4f8aaf077acd67679ce, type: 3}
+  maxNPCs: 5
+  spawnPositions:
+  - {x: -36, y: 0, z: 20}
+  - {x: -36, y: 0, z: 10}
+  - {x: -36, y: 0, z: 0}
+  - {x: -36, y: 0, z: -10}
+  - {x: -36, y: 0, z: -20}
+  - {x: -36, y: 0, z: -30}
+  refillDelay: 3
+  questTimeout: 30
+  firstNames:
+  - First1
+  - First2
+  - First3
+  - First4
+  lastNames:
+  - Last1
+  - Last2
+  - Last3
+  - Last4
+  rewards:
+  - Reward1
+  - Reward2
+  - Reward3
+  - Reward4
+  locations:
+  - Location1
+  - Location2
+  - Location3
+  - Location4
+  enemyTypes:
+  - Enemy1
+  - Enemy2
+  - Enemy3
+  - Enemy4
+  killCounts: 050000000a0000000f00000014000000
+  defendTimes:
+  - 5
+  - 10
+  - 15
+  - 20
