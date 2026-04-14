@@ -11,4 +11,9 @@ public abstract class SpellBase : ScriptableObject
     public float cooldown = 0f;
 
     public abstract void Cast(SpellContext context, SpellCaster caster);
+
+    public virtual string GetTooltipDetails()
+    {
+        return "PLACEHOLDER TOOLTIP";
+    }
 }

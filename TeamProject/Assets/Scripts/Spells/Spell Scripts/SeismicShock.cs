@@ -18,6 +18,16 @@ public class SeismicShock : SpellBase
         SpellDelivery.Instant(context, OnResolved);
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Shock and explode the rock around you to disrupt enemies</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Knockup Force:</b> <color=#7CFC84>{knockupForce}</color>\n" +
+            $"<b>Knockback Force:</b> <color=#7CFC84>{knockbackForce}</color>\n" +
+            $"<b>Radius:</b> <color=#6BCBFF>{radius}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Emanation(

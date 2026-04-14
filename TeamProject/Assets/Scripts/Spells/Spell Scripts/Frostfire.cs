@@ -36,6 +36,16 @@ public class Frostfire : SpellBase
         );
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Lob an exploding burst that slows and damages overtime</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Slow:</b> <color=#7CFC84>{slowPercent*100}% for {slowDuration}s</color>\n" +
+            $"<b>DoT:</b> <color=#FF6B6B>{burnDamagePerTick/burnTickInterval} x {burnDamagePerTick}s</color>\n" +
+            $"<b>Radius:</b> <color=#6BCBFF>{explosionRadius}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Burst(

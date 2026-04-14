@@ -26,6 +26,14 @@ public class PlasmaBeam : SpellBase
         caster.RunSpellRoutine(ChannelBeam(caster));
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Channel a destructive beam of plasma</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damagePerTick} x {duration/tickInterval}</color>\n" +
+            $"<b>Length:</b> <color=#6BCBFF>{length}</color>";
+    }
+
     IEnumerator ChannelBeam(SpellCaster caster)
     {
         if (caster == null)

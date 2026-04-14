@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
+    [Header("Reward Integration")]
+    [SerializeField] SpellInventoryUI spellInventoryUI;
     public static QuestManager Instance { get; private set; }
 
     public class ActiveQuest
@@ -228,7 +230,29 @@ public class QuestManager : MonoBehaviour
 
     void OnMissionSuccess(ActiveQuest q)
     {
-        Debug.Log($"Mission success! Reward: {q.data.reward}");
+        SpellBase rewardSpell = q.data.reward;
+
+        if (rewardSpell == null)
+        {
+            Debug.Log($"Mission success! No reward spell assigned for {q.data.questName}");
+            return;
+        }
+
+        bool added = false;
+
+        if (spellInventoryUI != null)
+            added = spellInventoryUI.TryAddSpell(rewardSpell);
+
+        if (added)
+        {
+            Debug.Log($"Mission success! Reward granted: {rewardSpell.spellName}");
+            QuestUI.Instance?.ShowPopup($"Received spell: {rewardSpell.spellName}");
+        }
+        else
+        {
+            Debug.LogWarning($"Mission success, but reward could not be added: {rewardSpell.spellName}");
+            QuestUI.Instance?.ShowPopup($"Inventory full! Could not receive {rewardSpell.spellName}");
+        }
     }
 
     // --- Location beam management ---

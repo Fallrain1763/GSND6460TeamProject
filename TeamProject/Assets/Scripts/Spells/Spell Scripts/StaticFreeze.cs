@@ -20,6 +20,16 @@ public class StaticFreeze : SpellBase
         SpellDelivery.Instant(context, OnResolved);
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Channel electricity through snow to create a burst where you're looking</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Slow:</b> <color=#7CFC84>{slowPercent*100}% for {slowDuration}s</color>\n" +
+            $"<b>Range:</b> <color=#6BCBFF>{maxRange}</color>\n" +
+            $"<b>Radius:</b> <color=#6BCBFF>{radius}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Vector3 burstCenter = SpellTargeting.ClampPointToRange(

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 [RequireComponent(typeof(Image))]
-public class SpellSlot : MonoBehaviour, IPointerDownHandler
+public class SpellSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
 {
     SpellBase spell;
     SlotSource source;
@@ -134,4 +134,28 @@ public class SpellSlot : MonoBehaviour, IPointerDownHandler
     public SpellBase GetSpell() => spell;
     public SlotSource GetSource() => source;
     public int GetIndex() => index;
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (spell == null || manager == null)
+            return;
+
+        manager.ShowSpellTooltip(spell, eventData.position);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (manager == null)
+            return;
+
+        manager.HideSpellTooltip();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        if (spell == null || manager == null)
+            return;
+
+        manager.UpdateSpellTooltipPosition(eventData.position);
+    }
 }

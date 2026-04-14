@@ -18,6 +18,15 @@ public class EarthSpike : SpellBase
         SpellDelivery.Instant(context, OnResolved);
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Fires a disruptive column of rock.</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Knockup Strength:</b> <color=#7CFC84>{knockupForce}</color>\n" +
+            $"<b>Length:</b> <color=#6BCBFF>{length}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Line(

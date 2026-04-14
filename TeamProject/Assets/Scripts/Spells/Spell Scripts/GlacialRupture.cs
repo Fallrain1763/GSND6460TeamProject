@@ -31,6 +31,15 @@ public class GlacialRupture : SpellBase
         );
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Lob a snowball to cause a directional fissure, knocking enemies in the direction the fissure opens</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Knockback:</b> <color=#7CFC84>{knockbackForce}</color>\n" +
+            $"<b>Length:</b> <color=#6BCBFF>{length}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Line(

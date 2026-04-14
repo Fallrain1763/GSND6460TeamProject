@@ -32,6 +32,17 @@ public class Avalanche : SpellBase
         );
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Lob a snowball to cause a directional avalanche, blasting enemies in the direction of the rock and snow</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Knockup:</b> <color=#7CFC84>{knockupForce}</color>\n" +
+            $"<b>Knockback:</b> <color=#7CFC84>{knockbackForce}</color>\n" +
+            $"<b>Length:</b> <color=#6BCBFF>{length}</color>";
+    }
+
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Line(

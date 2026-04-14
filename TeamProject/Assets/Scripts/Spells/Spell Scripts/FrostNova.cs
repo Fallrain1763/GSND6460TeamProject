@@ -17,6 +17,16 @@ public class FrostNova : SpellBase
         SpellDelivery.Instant(context, OnResolved);
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Blasts ice in every direction around you.</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Slow:</b> <color=#7CFC84>{slowPercent*100}% for {slowDuration}s</color>\n" +
+            $"<b>Radius:</b> <color=#6BCBFF>{radius}</color>";
+    }
+
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Emanation(

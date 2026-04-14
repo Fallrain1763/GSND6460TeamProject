@@ -31,6 +31,7 @@ public class SpellInventoryUI : MonoBehaviour
     [SerializeField] SpellCaster spellCaster;
 
     public event Action OnHotbarChanged;
+    [SerializeField] SpellTooltipUI tooltipUI;
 
     SpellBase[] inventory;
     SpellBase[] hotbar;
@@ -116,6 +117,9 @@ public class SpellInventoryUI : MonoBehaviour
 
         if (isOpen)
             Refresh();
+
+        if (!isOpen)
+            HideSpellTooltip();
     }
 
     void Refresh()
@@ -516,5 +520,27 @@ public class SpellInventoryUI : MonoBehaviour
 
         Debug.LogWarning("Inventory full!");
         return false;
+    }
+
+    public void ShowSpellTooltip(SpellBase spell, Vector2 screenPosition)
+    {
+        if (!isOpen || tooltipUI == null || spell == null)
+            return;
+
+        tooltipUI.Show(spell, screenPosition);
+    }
+
+    public void UpdateSpellTooltipPosition(Vector2 screenPosition)
+    {
+        if (!isOpen || tooltipUI == null)
+            return;
+
+        tooltipUI.UpdatePosition(screenPosition);
+    }
+
+    public void HideSpellTooltip()
+    {
+        if (tooltipUI != null)
+            tooltipUI.Hide();
     }
 }

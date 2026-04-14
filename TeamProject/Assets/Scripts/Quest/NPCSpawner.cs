@@ -21,7 +21,7 @@ public class NPCSpawner : MonoBehaviour
     public string[] lastNames  = { "Last1",  "Last2",  "Last3",  "Last4"  };
 
     [Header("Quest Pools")]
-    public string[] rewards     = { "Reward1", "Reward2", "Reward3", "Reward4" };
+    public SpellBase[] rewards;
     public string[] locations   = { "Location1", "Location2", "Location3", "Location4" };
     public string[] enemyTypes  = { "Enemy1", "Enemy2", "Enemy3", "Enemy4" };
     public int[]    killCounts  = { 5, 10, 15, 20 };

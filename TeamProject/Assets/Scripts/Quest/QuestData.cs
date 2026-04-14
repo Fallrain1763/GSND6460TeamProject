@@ -10,7 +10,7 @@ public class QuestData
     public int killCount;              // Kill only
     public string enemyTypeName;       // Kill only
     public float defendDuration;       // Defend only
-    public string reward;
+    public SpellBase reward;
 
     // npcName is passed in since QuestData doesn't store it
     public string GetDescription(string npcName = "")

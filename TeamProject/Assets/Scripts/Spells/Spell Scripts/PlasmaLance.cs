@@ -24,6 +24,16 @@ public class PlasmaLance : SpellBase
         SpellDelivery.Instant(context, OnResolved);
     }
 
+    public override string GetTooltipDetails()
+    {
+        return
+            "<i>Fire a bolt of superheated plasma that shocks and burns</i>\n\n" +
+            $"<b>Damage:</b> <color=#FF6B6B>{damage}</color>\n" +
+            $"<b>Stun Duration:</b> <color=#7CFC84>{stunDuration}s</color>\n" +
+            $"<b>DoT:</b> <color=#FF6B6B>{burnDamagePerTick/burnTickInterval} x {burnDamagePerTick}s</color>\n" +
+            $"<b>Length:</b> <color=#6BCBFF>{length}</color>";
+    }
+
     void OnResolved(SpellContext resolvedContext)
     {
         Collider[] hits = SpellShape.Line(

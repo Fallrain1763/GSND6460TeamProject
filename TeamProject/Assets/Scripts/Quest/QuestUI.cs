@@ -122,7 +122,7 @@ public class QuestUI : MonoBehaviour
         string line2 = q.GetProgressString();
 
         // Line 3: reward
-        string line3 = $"Reward: {q.data.reward}";
+        string line3 = $"Reward: {q.data.reward.spellName}";
 
         return $"{line1}\n{line2}\n{line3}";
     }
