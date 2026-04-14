@@ -116,6 +116,7 @@ public class QuestManager : MonoBehaviour
             timeoutActive = true
         };
         activeQuests.Add(q);
+        ShowBeam(data.startLocationName);
         return q;
     }
 
@@ -137,9 +138,13 @@ public class QuestManager : MonoBehaviour
                 q.startLocationReached = true;
                 q.timeoutActive        = false;
                 changed = true;
+                HideBeam(q.data.startLocationName);
 
                 if (q.data.questType == QuestType.Defend)
                     q.defendStarted = true;
+
+                if (q.data.questType == QuestType.Escort)
+                    ShowBeam(q.data.targetLocationName);
 
                 // Switch all enemies to target the NPC for Escort and Defend
                 if (q.data.questType == QuestType.Escort || q.data.questType == QuestType.Defend)
@@ -204,6 +209,8 @@ public class QuestManager : MonoBehaviour
 
     void CompleteQuest(ActiveQuest q)
     {
+        HideBeam(q.data.startLocationName);
+        HideBeam(q.data.targetLocationName);
         OnMissionSuccess(q);
         ClearEnemyNPCTargets();
         QuestUI.Instance?.ShowPopup($"Quest complete: {q.data.questName}");
@@ -224,7 +231,25 @@ public class QuestManager : MonoBehaviour
         Debug.Log($"Mission success! Reward: {q.data.reward}");
     }
 
-    // --- Enemy target management ---
+    // --- Location beam management ---
+
+    // Find a LocationTrigger by name
+    LocationTrigger FindTrigger(string locationName)
+    {
+        foreach (var t in FindObjectsByType<LocationTrigger>(FindObjectsSortMode.None))
+            if (t.locationName == locationName) return t;
+        return null;
+    }
+
+    void ShowBeam(string locationName)
+    {
+        FindTrigger(locationName)?.SetBeamVisible(true);
+    }
+
+    void HideBeam(string locationName)
+    {
+        FindTrigger(locationName)?.SetBeamVisible(false);
+    }
 
     void SwitchEnemiesToNPC(QuestNPC npc)
     {

@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -17,6 +19,14 @@ public class QuestNPC : MonoBehaviour
     NavMeshAgent agent;
     Transform player;
     bool playerInRange;
+    public void StartFollowing()
+    {
+        isFollowing = true;
+        Debug.Log($"NPC {npcName} StartFollowing, isOnNavMesh: {agent?.isOnNavMesh}, position: {transform.position}");
+
+        if (agent != null && agent.isOnNavMesh && player != null)
+            agent.SetDestination(player.position);
+    }
     bool questActive;
     bool isFollowing;
 
@@ -32,6 +42,28 @@ public class QuestNPC : MonoBehaviour
         agent  = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
         SetMarkVisible(false);
+        StartCoroutine(WarpToNavMesh());
+    }
+
+    IEnumerator WarpToNavMesh()
+    {
+        yield return null;
+
+        if (agent == null) yield break;
+
+        float[] radii = { 2f, 5f, 10f, 20f };
+        foreach (float r in radii)
+        {
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, r, NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
+                agent.ResetPath();
+                Debug.Log($"NPC {npcName} warped to NavMesh at {hit.position} (radius {r}), isOnNavMesh: {agent.isOnNavMesh}");
+                yield break;
+            }
+        }
+
+        Debug.LogWarning($"NPC {npcName} could not find NavMesh near {transform.position}");
     }
 
     void Update()
@@ -46,8 +78,10 @@ public class QuestNPC : MonoBehaviour
             OnInteract();
 
         // Follow player for Escort and Defend quests
-        if (isFollowing && agent != null)
+        if (isFollowing && agent != null && agent.isOnNavMesh)
+        {
             agent.SetDestination(player.position);
+        }
     }
 
     void OnInteract()
@@ -68,15 +102,11 @@ public class QuestNPC : MonoBehaviour
             StartFollowing();
     }
 
-    public void StartFollowing()
-    {
-        isFollowing = true;
-    }
-
     public void StopFollowing()
     {
         isFollowing = false;
-        agent?.ResetPath();
+        if (agent != null && agent.isOnNavMesh)
+            agent.ResetPath();
     }
 
     public void TakeDamage(float amount)
