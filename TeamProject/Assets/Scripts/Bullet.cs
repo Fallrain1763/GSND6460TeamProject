@@ -7,6 +7,8 @@ public class Bullet : MonoBehaviour
     [HideInInspector] public float damage = 25f;
     [HideInInspector] public float speed  = 15f;
     [HideInInspector] public float range  = 20f;
+    
+    public bool noDamage = false;
 
     Rigidbody rb;
     Vector3 spawnPos;
@@ -47,13 +49,14 @@ public class Bullet : MonoBehaviour
         if (enemy != null)
         {
             if (impactParticles != null) Instantiate(impactParticles, col.gameObject.transform);
-            enemy.TakeDamage(damage);
+            if (!noDamage) enemy.TakeDamage(damage);
             Destroy(gameObject); // Bullet disappears on enemy hit
             return;
         }
 
         // Destroy on hitting anything else (walls, ground, etc.)
         // Remove this line if you don't want bullets destroyed by terrain
+        if (impactParticles != null) Instantiate(impactParticles);
         Destroy(gameObject);
     }
 }

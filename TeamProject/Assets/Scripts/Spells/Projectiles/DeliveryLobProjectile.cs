@@ -9,6 +9,7 @@ public class DeliveryLobProjectile : MonoBehaviour
     Action<Vector3> onResolve;
 
     bool hasResolved = false;
+    public GameObject explosionPrefab;
 
     void Awake()
     {
@@ -39,6 +40,7 @@ public class DeliveryLobProjectile : MonoBehaviour
 
         onResolve?.Invoke(resolvePoint);
 
+        if (explosionPrefab != null) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 }

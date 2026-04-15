@@ -4904,7 +4904,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3248401102161172195}
   m_Layer: 2
-  m_Name: Explosion
+  m_Name: BlueExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5150,7 +5150,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.40050718, b: 0.023584902, a: 1}
+      maxColor: {r: 0.02352941, g: 1, b: 0.99107784, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

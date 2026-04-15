@@ -34,6 +34,7 @@ public class FrostNova : SpellBase
             radius,
             targetLayers
         );
+        Instantiate(spellPrefab, resolvedContext.origin, Quaternion.identity);
 
         foreach (Collider hit in hits)
         {

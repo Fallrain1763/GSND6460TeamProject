@@ -15,6 +15,7 @@ MonoBehaviour:
   spellName: Frost Nova
   icon: {fileID: -1648376726, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  spellPrefab: {fileID: 5823370793434374271, guid: f7ec36e5b769e2648b55d143830e926b, type: 3}
   cooldown: 4
   radius: 5
   targetLayers:

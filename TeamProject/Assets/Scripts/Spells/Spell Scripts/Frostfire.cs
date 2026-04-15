@@ -48,7 +48,7 @@ public class Frostfire : SpellBase
 
     void OnResolved(SpellContext resolvedContext)
     {
-        Collider[] hits = SpellShape.Burst(
+        Collider[] hits = SpellShape.InvisBurst(
             resolvedContext.origin,
             explosionRadius,
             targetLayers

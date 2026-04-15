@@ -9,6 +9,12 @@ public static class SpellShape
     // -------------------------
     // BURST
     // -------------------------
+    
+    public static Collider[] InvisBurst(Vector3 center, float radius, LayerMask targetLayers)
+    {
+        return Physics.OverlapSphere(center, radius, targetLayers);
+    }
+
     public static Collider[] Burst(Vector3 center, float radius, LayerMask targetLayers)
     {
         if (debugDraw)
@@ -31,6 +37,13 @@ public static class SpellShape
     // -------------------------
     // LINE
     // -------------------------
+    public static Collider[] InvisLine(Vector3 start, Vector3 direction, float length, float radius, LayerMask targetLayers)
+    {
+        Vector3 end = start + direction.normalized * length;
+
+        return Physics.OverlapCapsule(start, end, radius, targetLayers);
+    }
+
     public static Collider[] Line(Vector3 start, Vector3 direction, float length, float radius, LayerMask targetLayers)
     {
         Vector3 end = start + direction.normalized * length;

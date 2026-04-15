@@ -6,6 +6,7 @@ public abstract class SpellBase : ScriptableObject
     public string spellName = "New Spell";
     public Sprite icon;
     public Color tintColor = Color.white;
+    public GameObject spellPrefab; // not needed for lob delivery spells
 
     [Header("Casting")]
     public float cooldown = 0f;
