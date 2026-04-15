@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -36,6 +37,9 @@ public class Enemy : MonoBehaviour
     protected NavMeshAgent agent;
     protected EnemyState currentState = EnemyState.Idle;
 
+    [Header("UI")]
+    [SerializeField] GameObject canvas;
+    [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] Slider healthbar;
 
     // NPC target (set by QuestManager when Escort/Defend start location is reached)
@@ -62,6 +66,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        nameText.text = enemyTypeName;
         currentHealth = maxHealth;
         agent = GetComponent<NavMeshAgent>();
 
@@ -120,6 +125,7 @@ public class Enemy : MonoBehaviour
                 Attack();
                 break;
             case EnemyState.Die:
+                Die();
                 break;
         }
     }
@@ -138,7 +144,6 @@ public class Enemy : MonoBehaviour
         if (currentHealth <= 0f)
         {
             currentState = EnemyState.Die;
-            Die();
         }
         else
         {
@@ -385,6 +390,7 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        canvas.SetActive(false);
         animator.Play("die");
         QuestManager.Instance?.ReportEnemyKilled(enemyTypeName);
         Debug.Log("Enemy died!");

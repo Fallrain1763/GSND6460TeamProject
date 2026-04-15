@@ -1,7 +1,8 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.AI;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class QuestNPC : MonoBehaviour
@@ -14,6 +15,11 @@ public class QuestNPC : MonoBehaviour
 
     [Header("Health")]
     public float maxHealth = 100f;
+
+    [Header("UI")]
+    public GameObject canvas;
+    public TextMeshProUGUI nameText;
+    public Slider healthbar;
 
     float currentHealth;
     NavMeshAgent agent;
@@ -38,6 +44,7 @@ public class QuestNPC : MonoBehaviour
 
     void Start()
     {
+        nameText.text = npcName;
         player = GameObject.FindWithTag("Player")?.transform;
         agent  = GetComponent<NavMeshAgent>();
         currentHealth = maxHealth;
@@ -112,12 +119,14 @@ public class QuestNPC : MonoBehaviour
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        healthbar.value = currentHealth / maxHealth;
         if (currentHealth <= 0f)
             Die();
     }
 
     void Die()
     {
+        canvas.SetActive(false);
         QuestManager.Instance?.ReportNPCDeath(questData);
         NPCSpawner.Instance?.OnNPCRemoved(this);
         Destroy(gameObject);
