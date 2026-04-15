@@ -682,6 +682,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5304099967946934469}
   - {fileID: 3123200636037947011}
   - {fileID: 6986666842071607164}
   m_Father: {fileID: 0}
@@ -701,7 +702,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3718127064360387971}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -811,6 +812,7 @@ MonoBehaviour:
   canvas: {fileID: 1911211913256382962}
   nameText: {fileID: 5462859782810761167}
   healthbar: {fileID: 1500056635034042651}
+  animator: {fileID: 2268650950633624255}
   questTimeout: 30
   npcName: 
   spawnIndex: 0
@@ -1159,3 +1161,74 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1001 &5625360615764537134
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1619375064893159543}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.04024124
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.141
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.022
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_Name
+      value: Peasant Man
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b07aa8cdee0ea654696a85dc3fb6ff36, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+--- !u!95 &2268650950633624255 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+  m_PrefabInstance: {fileID: 5625360615764537134}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5304099967946934469 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8fb1d2bba87c68f47b242a498212f3f1, type: 3}
+  m_PrefabInstance: {fileID: 5625360615764537134}
+  m_PrefabAsset: {fileID: 0}

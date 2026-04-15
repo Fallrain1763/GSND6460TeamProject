@@ -66,10 +66,10 @@ MonoBehaviour:
   - Last3
   - Last4
   rewards:
-  - Reward1
-  - Reward2
-  - Reward3
-  - Reward4
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   locations:
   - Location1
   - Location2
@@ -86,3 +86,11 @@ MonoBehaviour:
   - 10
   - 15
   - 20
+  red:
+  - {fileID: 2100000, guid: ed194881d58a2ee4c80466f9f3fe0d91, type: 2}
+  yellow:
+  - {fileID: 2100000, guid: 90c9a5b7f2121418d999e7e80dbe53c5, type: 2}
+  blue:
+  - {fileID: 2100000, guid: e426fdba5ad8d48fa942fb03ec92ec04, type: 2}
+  white:
+  - {fileID: -9134265094312954877, guid: 03d757785deca1546acfe4e29df3f28a, type: 3}

@@ -30,6 +30,11 @@ public class NPCSpawner : MonoBehaviour
     readonly List<QuestNPC> activeNPCs = new();
     readonly HashSet<int> occupiedIndices = new();  // Tracks which spawn positions are in use
 
+    public Material[] red;
+    public Material[] yellow;
+    public Material[] blue;
+    public Material[] white;
+
     // Counters for quest naming (Escort1, Kill2, etc.)
     int escortCount, killCount, defendCount;
 
@@ -95,17 +100,30 @@ public class NPCSpawner : MonoBehaviour
         npc.questTimeout = questTimeout;
 
         // Color NPC based on quest type (red = Escort, yellow = Kill, blue = Defend)
-        var rend = obj.GetComponent<Renderer>();
+        // var rend = obj.GetComponent<Renderer>();
+        var rend = obj.GetComponentInChildren<SkinnedMeshRenderer>();
+
         if (rend != null)
         {
-            rend.material.color = npc.questData.questType switch
+            rend.materials = npc.questData.questType switch
             {
-                QuestType.Escort => Color.red,
-                QuestType.Kill   => Color.yellow,
-                QuestType.Defend => Color.blue,
-                _                => Color.white
+                QuestType.Escort => red,
+                QuestType.Kill   => yellow,
+                QuestType.Defend => blue,
+                _                => white
             };
         }
+        
+        // if (rend != null)
+        // {
+        //     rend.material.color = npc.questData.questType switch
+        //     {
+        //         QuestType.Escort => Color.red,
+        //         QuestType.Kill   => Color.yellow,
+        //         QuestType.Defend => Color.blue,
+        //         _                => Color.white
+        //     };
+        // }
 
         activeNPCs.Add(npc);
     }

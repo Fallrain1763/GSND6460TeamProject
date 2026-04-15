@@ -21,12 +21,15 @@ public class QuestNPC : MonoBehaviour
     public TextMeshProUGUI nameText;
     public Slider healthbar;
 
+    public Animator animator;
+
     float currentHealth;
     NavMeshAgent agent;
     Transform player;
     bool playerInRange;
     public void StartFollowing()
     {
+        animator.SetBool("walk", true);
         isFollowing = true;
         Debug.Log($"NPC {npcName} StartFollowing, isOnNavMesh: {agent?.isOnNavMesh}, position: {transform.position}");
 
@@ -118,6 +121,7 @@ public class QuestNPC : MonoBehaviour
 
     public void StopFollowing()
     {
+        animator.SetBool("walk", false);
         isFollowing = false;
         if (agent != null && agent.isOnNavMesh)
             agent.ResetPath();
