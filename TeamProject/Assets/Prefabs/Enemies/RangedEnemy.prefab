@@ -515,7 +515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   maxHealth: 50
   damageToPlayer: 10
-  enemyTypeName: 
+  enemyTypeName: Ranged Orc
   target: {fileID: 0}
   animator: {fileID: 1107898741209198555}
   wanderRange: 20

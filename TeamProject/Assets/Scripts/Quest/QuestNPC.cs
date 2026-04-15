@@ -73,6 +73,13 @@ public class QuestNPC : MonoBehaviour
         Debug.LogWarning($"NPC {npcName} could not find NavMesh near {transform.position}");
     }
 
+    public void WarpToPlayer()
+    {
+        Vector3 newPosition = player.position + new Vector3(0.5f, 0.5f, 0.5f);
+        agent.Warp(newPosition);
+        agent.SetDestination(player.position);
+    }
+
     void Update()
     {
         if (player == null) return;

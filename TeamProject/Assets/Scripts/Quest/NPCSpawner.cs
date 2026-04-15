@@ -23,7 +23,7 @@ public class NPCSpawner : MonoBehaviour
     [Header("Quest Pools")]
     public SpellBase[] rewards;
     public string[] locations   = { "Location1", "Location2", "Location3", "Location4" };
-    public string[] enemyTypes  = { "Enemy1", "Enemy2", "Enemy3", "Enemy4" };
+    public string[] enemyTypes  = { "Orc", "Ranged Orc"};
     public int[]    killCounts  = { 5, 10, 15, 20 };
     public float[]  defendTimes = { 5f, 10f, 15f, 20f };
 

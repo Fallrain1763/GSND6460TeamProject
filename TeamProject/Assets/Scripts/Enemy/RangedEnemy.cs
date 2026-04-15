@@ -36,7 +36,12 @@ public class RangedEnemy : Enemy
     override protected void ChaseTarget()
     {
         if (isRunning) return;
-        float distance = Vector3.Distance(target.position, transform.position);
+        float distance = 100f;
+        if (target == null)
+        {
+            target = playerObject.transform;
+            distance = Vector3.Distance(target.position, transform.position);
+        }
 
         if (distance < attackRange / 2)
         {

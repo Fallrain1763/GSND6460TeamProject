@@ -150,7 +150,11 @@ public class QuestManager : MonoBehaviour
 
                 // Switch all enemies to target the NPC for Escort and Defend
                 if (q.data.questType == QuestType.Escort || q.data.questType == QuestType.Defend)
+                {
+                    // Teleport to player
+                    q.sourceNPC.WarpToPlayer();
                     SwitchEnemiesToNPC(q.sourceNPC);
+                }
             }
 
             // Complete escort when target location is reached
