@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpellCaster : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class SpellCaster : MonoBehaviour
     [Header("Aiming")]
     public float maxAimDistance = 50f;
     public LayerMask aimLayers = ~0;
+
+    [Header("UI")]
+    public Image gloveImage;
+    public Sprite closedGlove;
+    public Sprite openGlove;
+    public float animationTime = 0.5f;
 
     Dictionary<SpellBase, float> lastCastTimes = new Dictionary<SpellBase, float>();
 
@@ -44,7 +51,8 @@ public class SpellCaster : MonoBehaviour
 
         if (!CanCast(spell))
             return;
-
+        Debug.Log("HERE");
+        StartCoroutine(HandCastAnimation());
         SpellContext context = BuildSpellContext();
         spell.Cast(context, this);
         lastCastTimes[spell] = Time.time;
@@ -132,5 +140,12 @@ public class SpellCaster : MonoBehaviour
     public bool IsOnCooldown(SpellBase spell)
     {
         return GetCooldownRemaining(spell) > 0f;
+    }
+
+    IEnumerator HandCastAnimation()
+    {
+        gloveImage.sprite = openGlove;
+        yield return new WaitForSecondsRealtime(animationTime);
+        gloveImage.sprite = closedGlove;
     }
 }

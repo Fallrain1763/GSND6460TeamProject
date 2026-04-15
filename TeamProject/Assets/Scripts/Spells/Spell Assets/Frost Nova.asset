@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Frost Nova
   m_EditorClassIdentifier: Assembly-CSharp::FrostNova
   spellName: Frost Nova
-  icon: {fileID: 21300000, guid: d44473c415ed4da428f0d863894d7378, type: 3}
+  icon: {fileID: -1648376726, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 4
   radius: 5

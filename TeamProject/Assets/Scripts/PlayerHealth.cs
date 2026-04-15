@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health")]
     public float maxHealth = 100f;
     PlayerUI ui;
+    public TextMeshProUGUI healthTMP;
 
     float currentHealth;
 
@@ -23,6 +25,8 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isInvulnerable) return;
         currentHealth -= amount;
+        string healthText = currentHealth + "/" + maxHealth;
+        healthTMP.text = healthText;
         Debug.Log($"Player HP: {currentHealth}/{maxHealth}");
         ui.UpdateUI(currentHealth/maxHealth);
 

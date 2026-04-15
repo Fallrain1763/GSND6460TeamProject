@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Plasma Beam
   m_EditorClassIdentifier: Assembly-CSharp::PlasmaBeam
   spellName: Plasma Beam
-  icon: {fileID: 21300000, guid: 84c3eeb17bcf21b44aa3bed3cdf95bbc, type: 3}
+  icon: {fileID: 25956882, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 15
   duration: 3

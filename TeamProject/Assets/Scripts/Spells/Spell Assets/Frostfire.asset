@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Frostfire
   m_EditorClassIdentifier: Assembly-CSharp::Frostfire
   spellName: Frostfire
-  icon: {fileID: 21300000, guid: 65756e29730e2d0469a8ba20f92cabbe, type: 3}
+  icon: {fileID: -1912537473, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 4
   projectilePrefab: {fileID: 6257317749201331315, guid: 54401c250cba346499bc1951b22c00f7, type: 3}

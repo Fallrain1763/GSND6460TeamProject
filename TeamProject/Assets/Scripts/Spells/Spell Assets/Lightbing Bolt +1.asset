@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Lightbing Bolt +1
   m_EditorClassIdentifier: Assembly-CSharp::LightningBolt
   spellName: Lightning Bolt +1
-  icon: {fileID: 21300000, guid: 01dc6d9419ed1d94e87746b4b5edbba1, type: 3}
+  icon: {fileID: -864125816, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 2
   length: 20
