@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5aa35758cff6ca458a2d2592a88a63b, type: 3}
+  m_Name: TundraSpawns
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnWeightCollection
+  spawnWeights:
+  - spawnable: {fileID: 3976701095412101336, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
+    weight: 25
+  - spawnable: {fileID: 3976701095412101336, guid: 54fa4f31f9846714ab775727c35c9fca, type: 3}
+    weight: 75
