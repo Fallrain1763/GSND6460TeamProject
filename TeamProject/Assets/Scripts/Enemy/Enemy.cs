@@ -423,7 +423,10 @@ public class Enemy : MonoBehaviour
         foreach (Collider hitCollider in hitColliders)
         {
             if (hitCollider.gameObject.tag == "Player")
+            {
                 currentState = EnemyState.Chase;
+                return;
+            }
             else
                 currentState = EnemyState.Idle;
         }
