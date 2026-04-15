@@ -22,6 +22,7 @@ public class PlasmaLance : SpellBase
     public override void Cast(SpellContext context, SpellCaster caster)
     {
         SpellDelivery.Instant(context, OnResolved);
+        Instantiate(spellPrefab, context.origin, Quaternion.LookRotation(context.aimDirection));
     }
 
     public override string GetTooltipDetails()
@@ -36,7 +37,7 @@ public class PlasmaLance : SpellBase
 
     void OnResolved(SpellContext resolvedContext)
     {
-        Collider[] hits = SpellShape.Line(
+        Collider[] hits = SpellShape.InvisLine(
             resolvedContext.origin,
             resolvedContext.aimDirection,
             length,

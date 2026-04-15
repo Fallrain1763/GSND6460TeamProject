@@ -15,6 +15,7 @@ MonoBehaviour:
   spellName: Plasma Beam
   icon: {fileID: 25956882, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  spellPrefab: {fileID: 5823370793434374271, guid: 3d3e785d953c0e04a93fe0808ed86ad9, type: 3}
   cooldown: 15
   duration: 3
   tickInterval: 0.15

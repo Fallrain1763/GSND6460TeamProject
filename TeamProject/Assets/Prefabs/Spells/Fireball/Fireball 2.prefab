@@ -287,7 +287,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2
+      scalar: 3
       minScalar: 0.2
       maxCurve:
         serializedVersion: 2
@@ -995,13 +995,13 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.33505696
+          time: 0.5670215
           value: 0
-          inSlope: 1
-          outSlope: 1
+          inSlope: -1.2492511
+          outSlope: -1.2492511
           tangentMode: 0
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0.43437153
           outWeight: 0.33333334
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -4851,7 +4851,7 @@ GameObject:
   - component: {fileID: 7152830258992743789}
   - component: {fileID: 1127340439240523586}
   m_Layer: 0
-  m_Name: Fireball
+  m_Name: Fireball 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4867,7 +4867,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2896641593914457521}
@@ -4992,7 +4992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf1280b88eb7e544eae1faf70e7dfcc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeliveryLobProjectile
-  explosionPrefab: {fileID: 5150119910032459024, guid: 47ac0d7c8d351734c8fb498324fd3c4a, type: 3}
+  explosionPrefab: {fileID: 5150119910032459024, guid: 8eac308046f21ee4f9ce1b455c5e9750, type: 3}
 --- !u!1 &8440406628157346410
 GameObject:
   m_ObjectHideFlags: 0
@@ -5021,7 +5021,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6503381948103520661}

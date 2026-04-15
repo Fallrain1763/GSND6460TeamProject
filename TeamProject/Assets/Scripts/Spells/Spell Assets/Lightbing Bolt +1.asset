@@ -15,6 +15,7 @@ MonoBehaviour:
   spellName: Lightning Bolt +1
   icon: {fileID: -864125816, guid: 4e76f4f4fc665144fb3f432db2790daf, type: 3}
   tintColor: {r: 1, g: 1, b: 1, a: 1}
+  spellPrefab: {fileID: 5823370793434374271, guid: 565257883244c214db055e59c0283242, type: 3}
   cooldown: 2
   length: 20
   radius: 0.5

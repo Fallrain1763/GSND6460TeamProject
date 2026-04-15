@@ -35,6 +35,7 @@ public class SeismicShock : SpellBase
             radius,
             targetLayers
         );
+        Instantiate(spellPrefab, resolvedContext.origin, Quaternion.identity);
 
         foreach (Collider hit in hits)
         {

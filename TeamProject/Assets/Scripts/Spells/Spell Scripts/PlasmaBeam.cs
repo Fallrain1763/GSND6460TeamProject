@@ -24,6 +24,7 @@ public class PlasmaBeam : SpellBase
     public override void Cast(SpellContext context, SpellCaster caster)
     {
         caster.RunSpellRoutine(ChannelBeam(caster));
+        Instantiate(spellPrefab, context.origin, Quaternion.LookRotation(context.aimDirection));
     }
 
     public override string GetTooltipDetails()
@@ -66,7 +67,7 @@ public class PlasmaBeam : SpellBase
                 aimDirection = caster.GetCurrentAimDirection()
             };
 
-            Collider[] hits = SpellShape.Line(
+            Collider[] hits = SpellShape.InvisLine(
                 tickContext.origin,
                 tickContext.aimDirection,
                 length,
