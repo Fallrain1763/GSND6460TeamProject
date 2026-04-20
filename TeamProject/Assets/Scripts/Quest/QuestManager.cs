@@ -5,6 +5,10 @@ public class QuestManager : MonoBehaviour
 {
     [Header("Reward Integration")]
     [SerializeField] SpellInventoryUI spellInventoryUI;
+
+    [Header("NPC Defense")]
+    public float npcAggroRadius = 20f;  // Only enemies within this range will target the NPC
+
     public static QuestManager Instance { get; private set; }
 
     public class ActiveQuest
@@ -148,10 +152,9 @@ public class QuestManager : MonoBehaviour
                 if (q.data.questType == QuestType.Escort)
                     ShowBeam(q.data.targetLocationName);
 
-                // Switch all enemies to target the NPC for Escort and Defend
+                // Switch nearby enemies to target the NPC for Escort and Defend
                 if (q.data.questType == QuestType.Escort || q.data.questType == QuestType.Defend)
                 {
-                    // Teleport to player
                     q.sourceNPC.WarpToPlayer();
                     SwitchEnemiesToNPC(q.sourceNPC);
                 }
@@ -261,7 +264,6 @@ public class QuestManager : MonoBehaviour
 
     // --- Location beam management ---
 
-    // Find a LocationTrigger by name
     LocationTrigger FindTrigger(string locationName)
     {
         foreach (var t in FindObjectsByType<LocationTrigger>(FindObjectsSortMode.None))
@@ -279,10 +281,15 @@ public class QuestManager : MonoBehaviour
         FindTrigger(locationName)?.SetBeamVisible(false);
     }
 
+    // Only switch enemies within npcAggroRadius of the NPC
     void SwitchEnemiesToNPC(QuestNPC npc)
     {
         foreach (var e in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
-            e.SetNPCTarget(npc.transform);
+        {
+            float dist = Vector3.Distance(e.transform.position, npc.transform.position);
+            if (dist <= npcAggroRadius)
+                e.SetNPCTarget(npc.transform);
+        }
     }
 
     void ClearEnemyNPCTargets()
