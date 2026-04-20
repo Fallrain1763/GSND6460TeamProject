@@ -6,6 +6,7 @@ public class EnemySpawner : MonoBehaviour
     public SpawnWeightCollection spawnWeightCollection;
     public float spawnInterval;
     public int maxSpawnedEnemies; // Track with # children
+    public SpawnTimer spawnTimer;
     
     SpawnableToWeight[] spawnWeights;
     int[] rateThresholds;
@@ -15,6 +16,8 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
+        if (spawnTimer == null) spawnTimer = GameObject.Find("SpawnTimer").GetComponent<SpawnTimer>();
+        maxSpawnedEnemies = spawnTimer.spawnMax;
         SetUpRateThresholds(); 
     }
 
@@ -30,7 +33,8 @@ public class EnemySpawner : MonoBehaviour
             currentTime = 0;
         }
 
-        // Can escalate difficulty by varying spawn interval over time -RH
+        // Escalates difficulty by varying spawn interval over time -RH
+        if (spawnTimer.spawnMax != maxSpawnedEnemies) maxSpawnedEnemies = spawnTimer.spawnMax;
     }
 
     void SetUpRateThresholds()
