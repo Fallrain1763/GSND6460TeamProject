@@ -108,9 +108,6 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        // Not sure whether this should be called every tick
-        // Later, do switch statement for behavior state machine (Move, Attack, Idle, Die?) -RH
-
         switch (currentState)
         {
             case EnemyState.Idle:
@@ -127,6 +124,17 @@ public class Enemy : MonoBehaviour
             case EnemyState.Die:
                 Die();
                 break;
+        }
+
+        // Display UI based on proximity to player
+        // I kinda hate that it's every update tick but it works I guess -RH
+        if (Vector3.Distance(transform.position, playerObject.transform.position) < 10)
+        {
+            canvas.SetActive(true);
+        }
+        else
+        {
+            canvas.SetActive(false);
         }
     }
 

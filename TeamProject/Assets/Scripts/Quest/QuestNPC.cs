@@ -99,6 +99,17 @@ public class QuestNPC : MonoBehaviour
         {
             agent.SetDestination(player.position);
         }
+
+        // Display UI based on proximity to player
+        // I kinda hate that it's every update tick but it works I guess -RH
+        if (playerInRange)
+        {
+            canvas.SetActive(true);
+        }
+        else
+        {
+            canvas.SetActive(false);
+        }
     }
 
     void OnInteract()
