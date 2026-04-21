@@ -27,9 +27,14 @@ public class EnemySpawner : MonoBehaviour
 
         // Not sure if this is the best way to do intervals but it's my default -RH
         currentTime += Time.deltaTime;
+
         if (currentTime > spawnInterval)
         {
             if (transform.childCount < maxSpawnedEnemies) SpawnEnemy();
+            currentTime = 0;
+        }
+        else if (transform.childCount == maxSpawnedEnemies)
+        {
             currentTime = 0;
         }
 
