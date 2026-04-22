@@ -513,7 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70954ca9b40b0314185aff1b89c6f808, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
-  maxHealth: 50
+  maxHealth: 300
   damageToPlayer: 10
   enemyTypeName: Ranged Orc
   target: {fileID: 0}

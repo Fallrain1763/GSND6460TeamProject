@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnWeightCollection
   spawnWeights:
   - spawnable: {fileID: 3976701095412101336, guid: 0373fae5cac2742558cad67970a19cf3, type: 3}
-    weight: 4
+    weight: 8
   - spawnable: {fileID: 3976701095412101336, guid: 54fa4f31f9846714ab775727c35c9fca, type: 3}
+    weight: 2
+  - spawnable: {fileID: 2717408867727816274, guid: bb20c9b2584bcaa4592c14457471f5bd, type: 3}
+    weight: 20
+  - spawnable: {fileID: 8056840986167320908, guid: a0e7a337fc23ba7418a8bb9bd6ad5980, type: 3}
     weight: 1

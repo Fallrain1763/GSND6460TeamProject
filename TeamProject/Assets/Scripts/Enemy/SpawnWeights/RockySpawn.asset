@@ -17,3 +17,5 @@ MonoBehaviour:
     weight: 75
   - spawnable: {fileID: 3976701095412101336, guid: 54fa4f31f9846714ab775727c35c9fca, type: 3}
     weight: 25
+  - spawnable: {fileID: 2717408867727816274, guid: bb20c9b2584bcaa4592c14457471f5bd, type: 3}
+    weight: 25
