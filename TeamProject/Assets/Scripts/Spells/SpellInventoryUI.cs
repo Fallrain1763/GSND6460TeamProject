@@ -43,6 +43,12 @@ public class SpellInventoryUI : MonoBehaviour
     int dragSourceIndex;
     GameObject dragIcon;
     bool isDragging = false;
+    
+    [Header("Highlight Colors")]
+    [SerializeField] Color selectedHotbarColor = new Color(0.85f, 0.72f, 0.28f, 0.95f);
+    [SerializeField] Color validForgeMatchColor = new Color(0.25f, 0.75f, 0.35f, 0.95f);
+    [SerializeField] Color normalFilledColor = new Color(0.22f, 0.16f, 0.32f, 0.85f);
+    [SerializeField] Color normalEmptyColor = new Color(0.16f, 0.12f, 0.24f, 0.85f);
 
     List<SlotRecord> allSlots = new List<SlotRecord>();
 
@@ -138,6 +144,8 @@ public class SpellInventoryUI : MonoBehaviour
         foreach (Transform child in parent)
             Destroy(child.gameObject);
 
+        SpellBase forgeReferenceSpell = GetSingleForgeReferenceSpell();
+
         for (int i = 0; i < size; i++)
         {
             int idx = i;
@@ -146,10 +154,23 @@ public class SpellInventoryUI : MonoBehaviour
             SpellSlot slot = go.GetComponent<SpellSlot>();
             slot.Setup(data[idx], source, idx, this);
 
-            // Optional: visually highlight selected slot in the inventory hotbar row
-            if (source == SlotSource.Hotbar && idx == selectedHotbarIndex && slot.bgImage != null)
+            bool isSelectedHotbarSlot = source == SlotSource.Hotbar && idx == selectedHotbarIndex;
+            bool isValidForgeMatch =
+                forgeReferenceSpell != null &&
+                data[idx] != null &&
+                IsValidComboPair(forgeReferenceSpell, data[idx]);
+
+            if (isSelectedHotbarSlot)
             {
-                slot.bgImage.color = new Color(0.85f, 0.72f, 0.28f, 0.95f);
+                slot.SetHighlight(true, selectedHotbarColor, normalFilledColor, normalEmptyColor);
+            }
+            else if (isValidForgeMatch)
+            {
+                slot.SetHighlight(true, validForgeMatchColor, normalFilledColor, normalEmptyColor);
+            }
+            else
+            {
+                slot.SetHighlight(false, selectedHotbarColor, normalFilledColor, normalEmptyColor);
             }
 
             allSlots.Add(new SlotRecord
@@ -238,6 +259,38 @@ public class SpellInventoryUI : MonoBehaviour
         }
 
         return null;
+    }
+
+    SpellBase GetSingleForgeReferenceSpell()
+    {
+        bool hasA = slotASpell != null;
+        bool hasB = slotBSpell != null;
+
+        if (hasA && !hasB)
+            return slotASpell;
+
+        if (!hasA && hasB)
+            return slotBSpell;
+
+        return null;
+    }
+
+    bool IsValidComboPair(SpellBase a, SpellBase b)
+    {
+        if (a == null || b == null)
+            return false;
+
+        foreach (SpellCombo combo in combos)
+        {
+            bool match =
+                (combo.ingredientA == a && combo.ingredientB == b) ||
+                (combo.ingredientA == b && combo.ingredientB == a);
+
+            if (match)
+                return true;
+        }
+
+        return false;
     }
 
     public void BeginDrag(SpellBase spell, SlotSource source, int index)
