@@ -521,7 +521,7 @@ MonoBehaviour:
   wanderRange: 20
   walkSpeed: 3.5
   runSpeed: 7.5
-  aggroRadius: 30
+  aggroRadius: 100
   playerObject: {fileID: 0}
   canvas: {fileID: 8560056666501860476}
   nameText: {fileID: 3162298990429670799}

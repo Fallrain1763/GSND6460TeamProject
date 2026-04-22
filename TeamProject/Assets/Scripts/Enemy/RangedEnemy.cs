@@ -40,8 +40,8 @@ public class RangedEnemy : Enemy
         if (target == null)
         {
             target = playerObject.transform;
-            distance = Vector3.Distance(target.position, transform.position);
         }
+        distance = Vector3.Distance(target.position, transform.position);
 
         if (distance < attackRange / 2)
         {
