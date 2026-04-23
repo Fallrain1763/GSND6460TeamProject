@@ -199,6 +199,8 @@ public class QuestManager : MonoBehaviour
         var q = activeQuests.Find(x => x.data == data);
         if (q == null) return;
 
+        HideBeam(q.data.startLocationName);
+        HideBeam(q.data.targetLocationName);
         activeQuests.Remove(q);
         ClearEnemyNPCTargets();
         OnMissionFail(q);
