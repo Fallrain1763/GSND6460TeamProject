@@ -408,7 +408,7 @@ public class ProceduralTerrainGenerator : MonoBehaviour
                     // wB = sand weight — high near centre, zero beyond shore
                     wB = 1f - Mathf.Clamp01((dist - lakeRadius) / (shoreWidth * 2f));
                     break;
-                case BiomeType.Snowy: wB = Mathf.Clamp01((steep - 10f) / 8f); break;
+                case BiomeType.Snowy: wB = Mathf.Clamp01((steep - 10f) / 8f) * Mathf.Clamp01(1f - (td.GetInterpolatedHeight(nx, nz) / td.size.y - snowLineNorm) * 4f); break;
                 case BiomeType.Rocky: wB = Mathf.Clamp01((steep - 15f) / 10f); break;
                 default: wB = 0f; break;
             }
@@ -641,8 +641,9 @@ public class ProceduralTerrainGenerator : MonoBehaviour
 
         var trunk = new GameObject("Trunk");
         trunk.transform.SetParent(root.transform, false);
-        trunk.transform.localPosition = new Vector3(0f, trunkH*0.5f, 0f);
-        trunk.AddComponent<MeshFilter>().sharedMesh = MakeCylinder(trunkR, trunkH, 6);
+        float yOff0 = trunkH*0.85f; // same yOff as F0
+        trunk.transform.localPosition = new Vector3(0f, yOff0*0.5f, 0f);
+        trunk.AddComponent<MeshFilter>().sharedMesh = MakeCylinder(trunkR, yOff0, 6);
         trunk.AddComponent<MeshRenderer>().sharedMaterial = FlatMat(trunkColor);
 
         for (int i = 0; i < 3; i++)
