@@ -7,6 +7,22 @@ public class PlayerUI : MonoBehaviour
     [Header("Set Up UI")]
     [SerializeField] Slider healthbar;
     [SerializeField] Image screenFlash;
+    [SerializeField] GameObject healthUI;
+    bool isDisplayingHealth = true;
+
+    void Update()
+    {
+        if (isDisplayingHealth && ThirdPersonCamera.InputLocked)
+        {
+            isDisplayingHealth = false;
+            healthUI.SetActive(false);
+        }
+        else if (!isDisplayingHealth && !ThirdPersonCamera.InputLocked)
+        {
+            isDisplayingHealth = true;
+            healthUI.SetActive(true);
+        }
+    }
 
     public void UpdateUI(float newHealth)
     {
