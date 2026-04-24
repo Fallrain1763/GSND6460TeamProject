@@ -101,6 +101,8 @@ public class QuestManager : MonoBehaviour
                 if (q.timeoutTimer <= 0f)
                 {
                     q.timeoutTimer = 0f;
+                    HideBeam(q.data.startLocationName);
+                    HideBeam(q.data.targetLocationName);
                     activeQuests.RemoveAt(i);
                     QuestUI.Instance?.RefreshQuestList();
                     q.sourceNPC?.OnQuestTimeout();
@@ -213,6 +215,8 @@ public class QuestManager : MonoBehaviour
     {
         var q = activeQuests.Find(x => x.data == data);
         if (q == null) return;
+        HideBeam(q.data.startLocationName);
+        HideBeam(q.data.targetLocationName);
         activeQuests.Remove(q);
         ClearEnemyNPCTargets();
         QuestUI.Instance?.RefreshQuestList();
@@ -275,7 +279,11 @@ public class QuestManager : MonoBehaviour
 
     void ShowBeam(string locationName)
     {
-        FindTrigger(locationName)?.SetBeamVisible(true);
+        var trigger = FindTrigger(locationName);
+        if (trigger == null)
+            Debug.LogWarning($"ShowBeam: No LocationTrigger found with name '{locationName}'");
+        else
+            trigger.SetBeamVisible(true);
     }
 
     void HideBeam(string locationName)
