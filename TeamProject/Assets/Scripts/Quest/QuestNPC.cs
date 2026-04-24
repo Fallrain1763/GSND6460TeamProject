@@ -91,7 +91,7 @@ public class QuestNPC : MonoBehaviour
         playerInRange = dist <= interactRange;
         SetMarkVisible(playerInRange && !questActive);
 
-        if (playerInRange && Input.GetKeyDown(KeyCode.Space))
+        if (playerInRange && Input.GetKeyDown(KeyCode.E))
             OnInteract();
 
         // Follow player for Escort and Defend quests
