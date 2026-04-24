@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PlayerHealth : MonoBehaviour
@@ -40,6 +41,7 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player died!");
         gameObject.SetActive(false);
+        SceneManager.LoadScene("MainScene");
     }
 
     IEnumerator StartIFrame()
