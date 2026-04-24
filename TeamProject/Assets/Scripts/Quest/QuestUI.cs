@@ -112,9 +112,9 @@ public class QuestUI : MonoBehaviour
 
         string line1 = q.data.questType switch
         {
-            QuestType.Escort => $"{countdown}Escort {q.npcName} to {q.data.targetLocationName}",
-            QuestType.Kill   => $"{countdown}Kill {q.data.killCount} {q.data.enemyTypeName} for {q.npcName}",
-            QuestType.Defend => $"{countdown}Defend {q.npcName} for {q.data.defendDuration}s",
+            QuestType.Escort => $"Escort {q.npcName} to {q.data.targetLocationName}",
+            QuestType.Kill   => $"Kill {q.data.killCount} {q.data.enemyTypeName} for {q.npcName}",
+            QuestType.Defend => $"Defend {q.npcName} for {q.data.defendDuration}s",
             _                => q.data.GetDescription(q.npcName)
         };
 
@@ -124,7 +124,7 @@ public class QuestUI : MonoBehaviour
         // Line 3: reward
         string line3 = $"Reward: {q.data.reward.spellName}";
 
-        return $"{line1}\n{line2}\n{line3}";
+        return $"{countdown}{line2}\n{line1}\n{line3}";
     }
 
     static string FormatTime(float t)
