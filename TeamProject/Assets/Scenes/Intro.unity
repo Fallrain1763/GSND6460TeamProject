@@ -1345,7 +1345,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Welcome to your <b>new world</b>. You are a <b>Smellsmith</b>.\n\nIt is
+  m_text: "Welcome to your <b>new world</b>. You are a <b>Spellsmith</b>.\n\nIt is
     your responsibility to aid the people of this land with your magic. \n<b>Hostile
     orcs</b> have overrun what used to be a peaceful village. \nAll the villagers
     have left are their <b>spell components</b>, which they will offer up as thanks
